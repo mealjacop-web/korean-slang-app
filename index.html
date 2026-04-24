@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MZ 슬랭 사전</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-width:430px;margin:0 auto}
+.header{padding:20px 16px 12px;background:#0f0f0f;position:sticky;top:0;z-index:10;border-bottom:1px solid #222}
+.header h1{font-size:22px;font-weight:800;color:#fff}
+.header p{font-size:12px;color:#888;margin-top:2px}
+.search{margin:12px 16px;position:relative}
+.search input{width:100%;padding:10px 16px;background:#1a1a1a;border:1px solid #333;border-radius:12px;color:#fff;font-size:14px;outline:none}
+.search input::placeholder{color:#555}
+.cats{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto}
+.cats::-webkit-scrollbar{display:none}
+.cat{padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.cat.active{background:#FF2D55;border-color:#FF2D55;color:#fff}
+.list{padding:0 16px}
+.card{background:#1a1a1a;border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid #2a2a2a;cursor:pointer}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.word{font-size:22px;font-weight:800}
+.badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600}
+.nsfw{background:#FF2D55;color:#fff}
+.normal{background:#30D158;color:#fff}
+.roman{color:#888;font-size:12px;margin-bottom:4px}
+.meaning{color:#ccc;font-size:13px}
+.tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tag{background:#242424;border:1px solid #333;border-radius:8px;padding:3px 8px;color:#aaa;font-size:10px}
+.detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0f0f;z-index:100;overflow-y:auto;max-width:430px;margin:0 auto}
+.detail-inner{padding:20px 16px}
+.back{color:#FF2D55;font-size:14px;cursor:pointer;margin-bottom:16px;display:block}
+.detail-word{font-size:40px;font-weight:800;margin-bottom:4px}
+.detail-roman{color:#888;font-size:14px;margin-bottom:16px}
+.section{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #2a2a2a}
+.section-label{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.section-text{color:#eee;font-size:14px;line-height:1.6}
+.bubble{background:#FF2D55;border-radius:12px 12px 12px 2px;padding:10px 14px;margin-bottom:8px}
+.bubble .kor{color:#fff;font-size:14px;font-weight:600;margin-bottom:2px}
+.bubble .eng{color:rgba(255,255,255,0.8);font-size:12px}
+.empty{text-align:center;padding:40px;color:#555}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>MZ 슬랭 사전 🔥</h1>
+  <p>실제 한국인이 쓰는 말</p>
+</div>
+<div class="search"><input type="text" id="searchInput" placeholder="검색..." oninput="render()"></div>
+<div class="cats" id="cats"></div>
+<div class="list" id="list"></div>
+
+<div class="detail" id="detail">
+  <div class="detail-inner">
+    <span class="back" onclick="closeDetail()">← 뒤로</span>
+    <div class="detail-word" id="d-word"></div>
+    <div class="detail-roman" id="d-roman"></div>
+    <div class="section"><div class="section-label">뜻</div><div class="section-text" id="d-meaning"></div></div>
+    <div class="section"><div class="section-label">예문</div><div id="d-example"></div></div>
+    <div class="section"><div class="section-label">주의</div><div class="section-text" id="d-note"></div></div>
+  </div>
+</div>
+
+<script>
+const data = [
+  {word:"느좋",roman:"neu-jo",meaning:"느낌 좋다 → 'Vibes are good / feeling it'",example:{kor:"야 오늘 콘서트 진짜 느좋ㅋㅋ",eng:"Bro today's concert vibes are SO good lol"},note:"친한 친구, 온라인에서만 사용. 격식체 금지.",cats:["숏폼","K-POP"],nsfw:false},
+  {word:"존나",roman:"jon-na",meaning:"매우, 엄청 → 'F***ing / insanely / so much' — 강조할 때",example:{kor:"존나 피곤해...",eng:"I'm f***ing exhausted..."},note:"욕설. 공식 자리, 어른 앞에서 절대 사용 금지.",cats:["욕설","인터넷"],nsfw:true},
+  {word:"씨발",roman:"ssi-bal",meaning:"한국판 F**k — 놀람, 분노, 감탄 등 다양하게 사용",example:{kor:"씨발 진짜? 대박이다",eng:"Holy f**k, seriously? That's insane"},note:"강한 욕설. 상황 잘 보고 사용. 드라마에서 자주 등장.",cats:["욕설","드라마"],nsfw:true},
+  {word:"짱",roman:"jjang",meaning:"최고야, 진짜 멋져 → 'The best / awesome'",example:{kor:"이 가게 음식이 진짜 짱이야!",eng:"The food here is seriously the best!"},note:"일상적으로 많이 쓰임. 비교적 순한 표현.",cats:["일상","숏폼"],nsfw:false},
+  {word:"헐",roman:"heol",meaning:"말도 안 돼 → 'OMG / No way / What the...'",example:{kor:"헐, 진짜로?",eng:"OMG, seriously?"},note:"놀람이나 황당함을 표현. 남녀노소 다 씀.",cats:["일상","드라마"],nsfw:false},
+  {word:"꿀잼",roman:"kkul-jaem",meaning:"정말 재밌고 흥미로워요 → 'Super fun / a total blast'",example:{kor:"이 영화 완전 꿀잼이야",eng:"This movie is so much fun"},note:"꿀(honey) + 재미(fun) 합성어. 반대말은 노잼.",cats:["일상","숏폼"],nsfw:false},
+  {word:"노잼",roman:"no-jaem",meaning:"재미없고 지루해 → 'So boring / not fun at all'",example:{kor:"그 드라마는 노잼이었어",eng:"That drama was so boring"},note:"꿀잼의 반대. 노(no) + 재미(fun).",cats:["일상","드라마"],nsfw:false},
+  {word:"갑질",roman:"gap-jil",meaning:"권력 남용 → 'Power abuse / acting entitled'",example:{kor:"그 바깥은 갑질이 심해",eng:"That boss seriously abuses their power"},note:"사회적으로 민감한 단어. 뉴스에서도 자주 등장.",cats:["사회","드라마"],nsfw:false},
+  {word:"뻥치지마",roman:"ppeong-chi-ji-ma",meaning:"거짓말하지 마 → 'Don't lie / Stop BS-ing me'",example:{kor:"뻥치지 마, 너 갔잖아!",eng:"Don't lie, I know you went!"},note:"가벼운 표현이지만 상황에 따라 공격적으로 들릴 수 있음.",cats:["일상","드라마"],nsfw:false},
+  {word:"엄친아",roman:"eom-chin-a",meaning:"엄마 친구 아들 → 'Perfect kid next door / overachiever'",example:{kor:"엄친아라서 공부도 잘해",eng:"He's that classic overachiever type"},note:"비교 당할 때 쓰이는 말. 엄마 친구의 아들 줄임말.",cats:["일상","사회"],nsfw:false},
+  {word:"솔까말",roman:"sol-kka-mal",meaning:"솔직히 말하자면 → 'Honestly / TBH'",example:{kor:"솔까말, 나 피곤해",eng:"TBH, I'm really tired"},note:"솔직히+까놓고+말하면 줄임말. 인터넷 슬랭.",cats:["인터넷","일상"],nsfw:false},
+  {word:"멘붕",roman:"men-bung",meaning:"정신적 붕괴 → 'Mental breakdown / mind blown'",example:{kor:"시험 망 멘붕이야",eng:"I bombed the exam, I'm having a meltdown"},note:"멘탈(mental) + 붕괴(collapse). 과장해서 자주 씀.",cats:["일상","인터넷"],nsfw:false},
+  {word:"지린다",roman:"ji-rin-da",meaning:"너무 멋져서 오줌이 마려워요 → 'Absolutely insane / mind-blowing'",example:{kor:"그 공연이 진짜 시작됐어!",eng:"That performance was absolutely insane!"},note:"원래 욕 같은 뉘앙스지만 요즘은 감탄사로 많이 씀.",cats:["K-POP","숏폼"],nsfw:false},
+  {word:"쩐다",roman:"jjeonda",meaning:"엄청나다 → 'That's sick / incredible'",example:{kor:"우리 쩐다는 거 맞지?",eng:"We're pretty awesome, right?"},note:"긍정적 감탄. 젊은 세대가 많이 씀.",cats:["K-POP","일상"],nsfw:false},
+  {word:"빡세다",roman:"bbak-se-da",meaning:"강렬하다, 격렬하다 → 'Intense / brutal / tough'",example:{kor:"이번 시험 진짜 빡셌어",eng:"This exam was brutally hard"},note:"힘들거나 강도가 높을 때 사용.",cats:["일상","학교"],nsfw:false}
+];
+
+const allCats = ["전체","욕설","숏폼","K-POP","드라마","인터넷","일상"];
+let activeCat = "전체";
+
+function initCats(){
+  const el = document.getElementById("cats");
+  el.innerHTML = allCats.map(c=>`<div class="cat${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</div>`).join("");
+}
+
+function setCat(c){activeCat=c;initCats();render();}
+
+function render(){
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = data.filter(d=>{
+    const matchCat = activeCat==="전체" || d.cats.includes(activeCat);
+    const matchQ = !q || d.word.includes(q) || d.roman.includes(q) || d.meaning.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  const el = document.getElementById("list");
+  if(!filtered.length){el.innerHTML='<div class="empty">검색 결과 없음</div>';return;}
+  el.innerHTML = filtered.map((d,i)=>`
+    <div class="card" onclick="openDetail(${data.indexOf(d)})">
+      <div class="card-top">
+        <div class="word">${d.word}</div>
+        <div class="badge ${d.nsfw?'nsfw':'normal'}">${d.nsfw?'NSFW':'일반'}</div>
+      </div>
+      <div class="roman">${d.roman}</div>
+      <div class="meaning">${d.meaning.split('→')[1]||d.meaning}</div>
+      <div class="tags">${d.cats.map(c=>`<span class="tag">${c}</span>`).join("")}</div>
+    </div>
+  `).join("");
+}
+
+function openDetail(i){
+  const d = data[i];
+  document.getElementById("d-word").textContent = d.word;
+  document.getElementById("d-roman").textContent = d.roman;
+  document.getElementById("d-meaning").textContent = d.meaning;
+  document.getElementById("d-example").innerHTML = `<div class="bubble"><div class="kor">${d.example.kor}</div><div class="eng">${d.example.eng}</div></div>`;
+  document.getElementById("d-note").textContent = d.note;
+  document.getElementById("detail").style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function closeDetail(){document.getElementById("detail").style.display="none";}
+
+initCats();render();
+</script>
+</body>
+</html>
