@@ -7,10 +7,17 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-width:430px;margin:0 auto}
-.header{padding:20px 16px 12px;background:#0f0f0f;position:sticky;top:0;z-index:10;border-bottom:1px solid #222}
-.header h1{font-size:22px;font-weight:800;color:#fff}
-.header p{font-size:12px;color:#888;margin-top:2px}
-.search{margin:12px 16px;position:relative}
+.header{padding:16px;background:#0f0f0f;position:sticky;top:0;z-index:10;border-bottom:1px solid #222}
+.header h1{font-size:20px;font-weight:800}
+.header p{font-size:11px;color:#888;margin-top:2px}
+.tabs{display:flex;background:#0f0f0f;border-bottom:1px solid #222}
+.tab{flex:1;padding:12px;text-align:center;font-size:13px;color:#666;cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:#FF2D55;border-bottom:2px solid #FF2D55}
+.page{display:none;padding:0}
+.page.active{display:block}
+
+/* 단어장 */
+.search{margin:12px 16px}
 .search input{width:100%;padding:10px 16px;background:#1a1a1a;border:1px solid #333;border-radius:12px;color:#fff;font-size:14px;outline:none}
 .search input::placeholder{color:#555}
 .cats{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto}
@@ -19,13 +26,12 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 .cat.active{background:#FF2D55;border-color:#FF2D55;color:#fff}
 .list{padding:0 16px}
 .card{background:#1a1a1a;border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid #2a2a2a;cursor:pointer}
-.card.locked{opacity:0.5;cursor:default}
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .word{font-size:22px;font-weight:800}
 .badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600}
 .nsfw{background:#FF2D55;color:#fff}
 .normal{background:#30D158;color:#fff}
-.lock{background:#FFB800;color:#000}
+.pro{background:#FFB800;color:#000}
 .roman{color:#888;font-size:12px;margin-bottom:4px}
 .meaning{color:#ccc;font-size:13px}
 .tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
@@ -34,6 +40,9 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 .lock-banner h3{color:#FF2D55;font-size:16px;margin-bottom:8px}
 .lock-banner p{color:#aaa;font-size:12px;line-height:1.6;margin-bottom:14px}
 .lock-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.free-badge{background:#1a1a1a;border:1px solid #30D158;border-radius:8px;padding:2px 8px;color:#30D158;font-size:10px;margin-left:6px}
+
+/* 상세 */
 .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0f0f;z-index:100;overflow-y:auto;max-width:430px;margin:0 auto}
 .detail-inner{padding:20px 16px}
 .back{color:#FF2D55;font-size:14px;cursor:pointer;margin-bottom:16px;display:block}
@@ -45,19 +54,66 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 .bubble{background:#FF2D55;border-radius:12px 12px 12px 2px;padding:10px 14px;margin-bottom:8px}
 .bubble .kor{color:#fff;font-size:14px;font-weight:600;margin-bottom:2px}
 .bubble .eng{color:rgba(255,255,255,0.8);font-size:12px}
-.empty{text-align:center;padding:40px;color:#555}
-.free-badge{background:#1a1a1a;border:1px solid #30D158;border-radius:8px;padding:2px 8px;color:#30D158;font-size:10px;margin-left:6px}
+
+/* 퀴즈 */
+.quiz-wrap{padding:16px}
+.quiz-header{margin-bottom:16px}
+.quiz-source{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.src-btn{padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:12px;cursor:pointer;white-space:nowrap}
+.src-btn.active{background:#FF2D55;border-color:#FF2D55;color:#fff}
+.progress-bar{background:#222;border-radius:4px;height:4px;margin-bottom:16px}
+.progress-fill{background:#FF2D55;height:4px;border-radius:4px;transition:width 0.3s}
+.quiz-card{background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid #2a2a2a;text-align:center}
+.quiz-source-tag{font-size:11px;color:#FF2D55;margin-bottom:8px;font-weight:600}
+.quiz-scene{font-size:12px;color:#888;margin-bottom:12px;font-style:italic;line-height:1.5}
+.quiz-sentence{font-size:18px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:4px}
+.quiz-sentence span.highlight{color:#FF2D55;border-bottom:2px solid #FF2D55}
+.quiz-eng{font-size:12px;color:#666;margin-top:6px}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.option{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:14px 16px;color:#ddd;font-size:14px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%}
+.option:hover{background:#242424}
+.option.correct{border-color:#30D158;background:rgba(48,209,88,0.1);color:#30D158}
+.option.wrong{border-color:#FF2D55;background:rgba(255,45,85,0.1);color:#FF2D55}
+.result-msg{text-align:center;padding:12px;font-size:14px;font-weight:600;border-radius:12px;margin-bottom:12px;display:none}
+.result-msg.correct{background:rgba(48,209,88,0.1);color:#30D158}
+.result-msg.wrong{background:rgba(255,45,85,0.1);color:#FF2D55}
+.next-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;display:none}
+.quiz-score{background:#1a1a1a;border-radius:16px;padding:24px;text-align:center;border:1px solid #2a2a2a;display:none}
+.quiz-score h2{font-size:24px;font-weight:800;margin-bottom:8px}
+.quiz-score p{color:#aaa;font-size:14px;margin-bottom:16px}
+.restart-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.score-num{font-size:48px;font-weight:800;color:#FF2D55;margin:12px 0}
 </style>
 </head>
 <body>
+
 <div class="header">
   <h1>MZ 슬랭 사전 🔥</h1>
-  <p>실제 한국인이 쓰는 말 · <span style="color:#FF2D55">PRO</span> = 잠금해제</p>
+  <p>실제 한국인이 쓰는 말</p>
 </div>
-<div class="search"><input type="text" id="searchInput" placeholder="검색..." oninput="render()"></div>
-<div class="cats" id="cats"></div>
-<div class="list" id="list"></div>
 
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dict')">단어장</div>
+  <div class="tab" onclick="showTab('quiz')">퀴즈</div>
+</div>
+
+<!-- 단어장 -->
+<div id="dict" class="page active">
+  <div class="search"><input type="text" id="searchInput" placeholder="검색..." oninput="renderDict()"></div>
+  <div class="cats" id="cats"></div>
+  <div class="list" id="list"></div>
+</div>
+
+<!-- 퀴즈 -->
+<div id="quiz" class="page">
+  <div class="quiz-wrap">
+    <div class="quiz-source" id="quizSources"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="quizArea"></div>
+  </div>
+</div>
+
+<!-- 상세 -->
 <div class="detail" id="detail">
   <div class="detail-inner">
     <span class="back" onclick="closeDetail()">← 뒤로</span>
@@ -70,133 +126,258 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 </div>
 
 <script>
-const data = [
-  // 무료
-  {word:"짱",roman:"jjang",meaning:"최고야, 진짜 멋져 → 'The best / awesome'",example:{kor:"이 가게 음식이 진짜 짱이야!",eng:"The food here is seriously the best!"},note:"일상적으로 많이 쓰임. 비교적 순한 표현.",cats:["일상","숏폼"],nsfw:false,free:true},
-  {word:"헐",roman:"heol",meaning:"말도 안 돼 → 'OMG / No way'",example:{kor:"헐, 진짜로?",eng:"OMG, seriously?"},note:"놀람이나 황당함. 남녀노소 다 씀.",cats:["일상","드라마"],nsfw:false,free:true},
-  {word:"꿀잼",roman:"kkul-jaem",meaning:"정말 재밌어 → 'Super fun / a blast'",example:{kor:"이 영화 완전 꿀잼이야",eng:"This movie is so much fun"},note:"꿀+재미 합성어. 반대말은 노잼.",cats:["일상","숏폼"],nsfw:false,free:true},
-  {word:"노잼",roman:"no-jaem",meaning:"재미없고 지루해 → 'So boring'",example:{kor:"그 드라마는 노잼이었어",eng:"That drama was so boring"},note:"꿀잼의 반대.",cats:["일상","드라마"],nsfw:false,free:true},
-  {word:"느좋",roman:"neu-jo",meaning:"느낌 좋다 → 'Vibes are good'",example:{kor:"야 오늘 콘서트 진짜 느좋ㅋㅋ",eng:"Bro today's concert vibes are SO good"},note:"친한 친구, 온라인에서만.",cats:["숏폼","K-POP"],nsfw:false,free:true},
-  {word:"멘붕",roman:"men-bung",meaning:"정신적 붕괴 → 'Mental breakdown'",example:{kor:"시험 망 멘붕이야",eng:"I bombed the exam, total meltdown"},note:"멘탈+붕괴. 과장해서 자주 씀.",cats:["일상","인터넷"],nsfw:false,free:true},
-  {word:"솔까말",roman:"sol-kka-mal",meaning:"솔직히 말하자면 → 'TBH / Honestly'",example:{kor:"솔까말, 나 피곤해",eng:"TBH, I'm really tired"},note:"솔직히+까놓고+말하면 줄임말.",cats:["인터넷","일상"],nsfw:false,free:true},
-  {word:"엄친아",roman:"eom-chin-a",meaning:"완벽한 모범생 → 'Perfect overachiever next door'",example:{kor:"엄친아라서 공부도 잘해",eng:"He's that classic overachiever type"},note:"엄마 친구의 아들 줄임말.",cats:["일상","사회"],nsfw:false,free:true},
-  {word:"갑질",roman:"gap-jil",meaning:"권력 남용 → 'Power abuse / acting entitled'",example:{kor:"그 상사는 갑질이 심해",eng:"That boss seriously abuses their power"},note:"뉴스에서도 자주 등장하는 단어.",cats:["사회","드라마"],nsfw:false,free:true},
-  {word:"빡세다",roman:"bbak-se-da",meaning:"강렬하다, 힘들다 → 'Intense / brutal / tough'",example:{kor:"이번 시험 진짜 빡셌어",eng:"This exam was brutally hard"},note:"힘들거나 강도가 높을 때.",cats:["일상","학교"],nsfw:false,free:true},
-  {word:"꿀팁",roman:"kkul-tip",meaning:"유용한 팁 → 'Life hack / golden tip'",example:{kor:"그거 꿀팁이에요!",eng:"That's such a useful tip!"},note:"꿀+팁. 유튜브에서 엄청 많이 씀.",cats:["인터넷","숏폼"],nsfw:false,free:true},
-  {word:"취저",roman:"chwi-jeo",meaning:"취향저격 → 'Exactly my type / hits different'",example:{kor:"이 노래 완전 취저야",eng:"This song is exactly my vibe"},note:"취향+저격 줄임말. K-POP 팬덤에서 많이 씀.",cats:["K-POP","일상"],nsfw:false,free:true},
-  {word:"인싸",roman:"in-ssa",meaning:"인사이더, 인기많은 사람 → 'Popular kid / social butterfly'",example:{kor:"걔는 완전 인싸야",eng:"She's super popular"},note:"insider 줄임말. 반대는 아싸(outsider).",cats:["일상","학교"],nsfw:false,free:true},
-  {word:"아싸",roman:"a-ssa",meaning:"아웃사이더 → 'Loner / outsider'",example:{kor:"나는 좀 아싸인 것 같아",eng:"I think I'm kind of a loner"},note:"outsider 줄임말. 인싸의 반대.",cats:["일상","학교"],nsfw:false,free:true},
-  {word:"TMI",roman:"tee-em-eye",meaning:"너무 많은 정보 → 'Too Much Information'",example:{kor:"야 그건 좀 TMI 아니야?",eng:"Bro that's a bit TMI don't you think?"},note:"영어 약자 그대로 씀. MZ세대 일상어.",cats:["인터넷","일상"],nsfw:false,free:true},
-  {word:"킹받다",roman:"king-bat-da",meaning:"열받다의 강조 → 'So freaking annoying / infuriating'",example:{kor:"진짜 킹받네",eng:"This is so freaking annoying"},note:"킹(king)+받다. 유머러스하게 짜증 표현.",cats:["인터넷","숏폼"],nsfw:false,free:true},
-  {word:"레전드",roman:"le-jeon-deu",meaning:"전설적이다 → 'Legendary / iconic'",example:{kor:"그 장면 진짜 레전드다",eng:"That scene was absolutely legendary"},note:"legend 한국식 발음. K-POP에서 많이 씀.",cats:["K-POP","드라마"],nsfw:false,free:true},
-  {word:"복붙",roman:"bok-but",meaning:"복사+붙여넣기 → 'Copy-paste'",example:{kor:"그냥 복붙했어",eng:"I just copy-pasted it"},note:"복사+붙여넣기 줄임말. 인터넷 용어.",cats:["인터넷"],nsfw:false,free:true},
-  {word:"현타",roman:"hyeon-ta",meaning:"현실자각타임 → 'Reality check / hitting different'",example:{kor:"갑자기 현타 온다",eng:"Reality just hit me hard"},note:"현실+자각+타임 줄임말.",cats:["일상","인터넷"],nsfw:false,free:true},
-  {word:"극공",roman:"geuk-gong",meaning:"극도로 공감 → 'So relatable / I feel this so hard'",example:{kor:"이 짤 극공이야",eng:"This meme is SO relatable"},note:"극도로+공감 줄임말. 트위터에서 많이 씀.",cats:["인터넷","숏폼"],nsfw:false,free:true},
-
-  // 유료 - 일반
-  {word:"지린다",roman:"ji-rin-da",meaning:"너무 멋지다 → 'Absolutely insane / mind-blowing'",example:{kor:"그 공연 진짜 지린다",eng:"That performance was absolutely insane"},note:"원래 생리적 표현이지만 요즘은 감탄사.",cats:["K-POP","숏폼"],nsfw:false,free:false},
-  {word:"쩐다",roman:"jjeonda",meaning:"엄청나다 → 'That's sick / incredible'",example:{kor:"우리 쩐다는 거 맞지?",eng:"We're pretty awesome, right?"},note:"긍정적 감탄. 젊은 세대 많이 씀.",cats:["K-POP","일상"],nsfw:false,free:false},
-  {word:"갈비",roman:"gal-bi",meaning:"갈수록 비호감 → 'Getting more unlikeable by the second'",example:{kor:"걔 진짜 갈비야",eng:"He's seriously getting more annoying every day"},note:"갈수록+비호감 줄임말.",cats:["인터넷","일상"],nsfw:false,free:false},
-  {word:"핵노잼",roman:"haek-no-jaem",meaning:"극도로 재미없음 → 'Absolutely zero fun'",example:{kor:"이 수업 핵노잼이야",eng:"This class is absolutely zero fun"},note:"핵(nuclear)+노잼. 강조 표현.",cats:["일상","학교"],nsfw:false,free:false},
-  {word:"찐",roman:"jjin",meaning:"진짜, 진심 → 'Real / genuine / legit'",example:{kor:"걔 찐이야 찐",eng:"She's the real deal, for real"},note:"진짜의 강조. MZ 핵심 단어.",cats:["일상","인터넷"],nsfw:false,free:false},
-  {word:"넘사벽",roman:"neom-sa-byeok",meaning:"넘을 수 없는 사차원의 벽 → 'On a whole other level'",example:{kor:"걔 실력은 넘사벽이야",eng:"Her skills are on a whole other level"},note:"줄임말. 비교 불가 수준을 표현.",cats:["K-POP","일상"],nsfw:false,free:false},
-  {word:"별다줄",roman:"byeol-da-jul",meaning:"별걸 다 줄인다 → 'They abbreviate everything'",example:{kor:"요즘 애들 별다줄이야",eng:"Kids these days abbreviate everything"},note:"줄임말 문화를 자조적으로 표현.",cats:["인터넷","일상"],nsfw:false,free:false},
-  {word:"팩폭",roman:"paek-pok",meaning:"팩트폭행 → 'Brutal truth / hitting with facts'",example:{kor:"야 그거 팩폭이야",eng:"Bro that's a brutal truth bomb"},note:"팩트+폭행 줄임말.",cats:["인터넷","일상"],nsfw:false,free:false},
-  {word:"ㅂㅂ",roman:"ba-ba",meaning:"바이바이 → 'Bye bye'",example:{kor:"나 간다 ㅂㅂ",eng:"I'm out, byeee"},note:"채팅에서 쓰는 초약어.",cats:["인터넷"],nsfw:false,free:false},
-  {word:"ㅇㅈ",roman:"in-jeong",meaning:"인정 → 'Agreed / acknowledged'",example:{kor:"ㅇㅈ 그게 맞아",eng:"Agreed, that's correct"},note:"인정의 초약어. 채팅 필수 단어.",cats:["인터넷"],nsfw:false,free:false},
-  {word:"스불재",roman:"seu-bul-jae",meaning:"스스로 불러온 재앙 → 'Self-inflicted disaster'",example:{kor:"완전 스불재네 ㅋㅋ",eng:"You literally brought this on yourself lol"},note:"스스로+불러온+재앙 줄임말.",cats:["인터넷","일상"],nsfw:false,free:false},
-  {word:"억텐",roman:"eok-ten",meaning:"억지 텐션 → 'Forced hype / fake energy'",example:{kor:"저 사람 억텐이야",eng:"That person's energy is so forced"},note:"억지+텐션 줄임말.",cats:["일상","K-POP"],nsfw:false,free:false},
-  {word:"최애",roman:"choe-ae",meaning:"최고로 사랑하는 것 → 'Ultimate fave / number one bias'",example:{kor:"걔가 내 최애야",eng:"He's my ultimate fave"},note:"K-POP 팬덤 필수 단어.",cats:["K-POP"],nsfw:false,free:false},
-  {word:"덕질",roman:"deok-jil",meaning:"팬 활동 → 'Fandom activities / stanning'",example:{kor:"요즘 덕질하느라 바빠",eng:"I've been busy with fandom stuff lately"},note:"오타쿠+질. K-POP 팬 필수어.",cats:["K-POP"],nsfw:false,free:false},
-  {word:"입덕",roman:"ip-deok",meaning:"팬이 되다 → 'To become a fan / getting into a group'",example:{kor:"나 그 그룹 입덕했어",eng:"I just got into that group"},note:"입문+덕후. K-POP 팬덤 용어.",cats:["K-POP"],nsfw:false,free:false},
-  {word:"탈덕",roman:"tal-deok",meaning:"팬을 그만두다 → 'To leave a fandom'",example:{kor:"그 그룹 탈덕했어",eng:"I left that fandom"},note:"탈출+덕후. 입덕의 반대.",cats:["K-POP"],nsfw:false,free:false},
-  {word:"직캠",roman:"jik-kaem",meaning:"직접 찍은 영상 → 'Fancam'",example:{kor:"그 멤버 직캠 봤어?",eng:"Did you see that member's fancam?"},note:"직접+카메라. K-POP 팬 필수어.",cats:["K-POP"],nsfw:false,free:false},
-  {word:"사이다",roman:"sa-i-da",meaning:"속 시원한 상황 → 'So satisfying / refreshing'",example:{kor:"그 장면 진짜 사이다야",eng:"That scene was so satisfying"},note:"사이다처럼 속 시원하다는 표현.",cats:["드라마","일상"],nsfw:false,free:false},
-  {word:"막장",roman:"mak-jang",meaning:"막장 드라마 → 'Trashy / over-the-top drama'",example:{kor:"이 드라마 완전 막장이야",eng:"This drama is totally over the top"},note:"광산 막다른 곳에서 유래. 막장 드라마 필수어.",cats:["드라마"],nsfw:false,free:false},
-  {word:"고구마",roman:"go-gu-ma",meaning:"답답한 상황 → 'So frustrating / suffocating'",example:{kor:"이 드라마 고구마야",eng:"This drama is so frustrating to watch"},note:"고구마 먹으면 답답한 것처럼. 드라마 시청 필수어.",cats:["드라마","일상"],nsfw:false,free:false},
-
-  // 유료 - NSFW
-  {word:"존나",roman:"jon-na",meaning:"매우, 엄청 → 'F***ing / insanely'",example:{kor:"존나 피곤해...",eng:"I'm f***ing exhausted"},note:"강한 욕. 공식 자리, 어른 앞 절대 금지.",cats:["욕설","인터넷"],nsfw:true,free:false},
-  {word:"씨발",roman:"ssi-bal",meaning:"한국판 F**k → 놀람, 분노, 감탄",example:{kor:"씨발 진짜? 대박이다",eng:"Holy f**k, seriously? That's insane"},note:"강한 욕설. 드라마에서 자주 등장.",cats:["욕설","드라마"],nsfw:true,free:false},
-  {word:"개같다",roman:"gae-gat-da",meaning:"형편없다 → 'Total crap / absolute garbage'",example:{kor:"오늘 날씨 개같네",eng:"The weather today is total garbage"},note:"개+같다. 부정적 강조 표현.",cats:["욕설","일상"],nsfw:true,free:false},
-  {word:"미친",roman:"mi-chin",meaning:"미쳤다 → 'Crazy / insane / WTF'",example:{kor:"미친 이게 말이 돼?",eng:"This is insane, how is this real?"},note:"욕이지만 감탄으로도 많이 씀.",cats:["욕설","일상"],nsfw:true,free:false},
-  {word:"ㅅㅂ",roman:"ssi-bal",meaning:"씨발 초약어 → 'F**k (abbreviated)'",example:{kor:"ㅅㅂ 진짜?",eng:"WTF seriously?"},note:"채팅에서 씨발 대신 씀.",cats:["욕설","인터넷"],nsfw:true,free:false},
-  {word:"ㅈㄴ",roman:"jon-na",meaning:"존나 초약어 → 'F***ing (abbreviated)'",example:{kor:"ㅈㄴ 웃기다",eng:"That's f***ing hilarious"},note:"채팅에서 존나 대신 씀.",cats:["욕설","인터넷"],nsfw:true,free:false},
-  {word:"뒤지다",roman:"dwi-ji-da",meaning:"죽다의 속어 → 'To die / drop dead'",example:{kor:"웃겨서 뒤질 것 같아",eng:"I'm dying of laughter"},note:"죽다의 강한 표현. 과장해서 자주 씀.",cats:["욕설","일상"],nsfw:true,free:false},
-  {word:"병신",roman:"byeong-sin",meaning:"강한 욕 → 'Idiot / moron (very offensive)'",example:{kor:"야 병신같이 왜 그래",eng:"Why are you acting like such an idiot"},note:"매우 강한 욕. 상황 매우 주의.",cats:["욕설"],nsfw:true,free:false},
-  {word:"개소리",roman:"gae-so-ri",meaning:"헛소리 → 'BS / total nonsense'",example:{kor:"개소리 하지 마",eng:"Stop talking BS"},note:"개+소리. 말도 안 되는 소리에 씀.",cats:["욕설","일상"],nsfw:true,free:false},
-  {word:"ㅗ",roman:"bbong",meaning:"욕하는 손가락 이모티콘 → 'Middle finger emoji'",example:{kor:"ㅗ ㅗ",eng:"*middle fingers*"},note:"채팅에서 욕 대신 쓰는 기호.",cats:["욕설","인터넷"],nsfw:true,free:false},
+const slangData = [
+  {word:"짱",roman:"jjang",meaning:"최고야 → 'The best / awesome'",example:{kor:"이 가게 음식이 진짜 짱이야!",eng:"The food here is seriously the best!"},note:"일상적으로 많이 쓰임.",cats:["일상","숏폼"],nsfw:false,free:true},
+  {word:"헐",roman:"heol",meaning:"말도 안 돼 → 'OMG / No way'",example:{kor:"헐, 진짜로?",eng:"OMG, seriously?"},note:"놀람이나 황당함.",cats:["일상","드라마"],nsfw:false,free:true},
+  {word:"꿀잼",roman:"kkul-jaem",meaning:"정말 재밌어 → 'Super fun'",example:{kor:"이 영화 완전 꿀잼이야",eng:"This movie is so much fun"},note:"꿀+재미 합성어.",cats:["일상","숏폼"],nsfw:false,free:true},
+  {word:"노잼",roman:"no-jaem",meaning:"재미없어 → 'So boring'",example:{kor:"그 드라마는 노잼이었어",eng:"That drama was so boring"},note:"꿀잼의 반대.",cats:["일상","드라마"],nsfw:false,free:true},
+  {word:"느좋",roman:"neu-jo",meaning:"느낌 좋다 → 'Vibes are good'",example:{kor:"오늘 콘서트 진짜 느좋",eng:"Today's concert vibes are SO good"},note:"친한 친구, 온라인에서만.",cats:["숏폼","K-POP"],nsfw:false,free:true},
+  {word:"멘붕",roman:"men-bung",meaning:"정신적 붕괴 → 'Mental breakdown'",example:{kor:"시험 망 멘붕이야",eng:"I bombed the exam, total meltdown"},note:"멘탈+붕괴.",cats:["일상","인터넷"],nsfw:false,free:true},
+  {word:"솔까말",roman:"sol-kka-mal",meaning:"솔직히 말하자면 → 'TBH'",example:{kor:"솔까말, 나 피곤해",eng:"TBH, I'm really tired"},note:"솔직히+까놓고+말하면.",cats:["인터넷","일상"],nsfw:false,free:true},
+  {word:"인싸",roman:"in-ssa",meaning:"인기많은 사람 → 'Popular kid'",example:{kor:"걔는 완전 인싸야",eng:"She's super popular"},note:"insider 줄임말.",cats:["일상","학교"],nsfw:false,free:true},
+  {word:"아싸",roman:"a-ssa",meaning:"아웃사이더 → 'Loner / outsider'",example:{kor:"나는 좀 아싸인 것 같아",eng:"I think I'm kind of a loner"},note:"outsider 줄임말.",cats:["일상","학교"],nsfw:false,free:true},
+  {word:"킹받다",roman:"king-bat-da",meaning:"열받다 강조 → 'So freaking annoying'",example:{kor:"진짜 킹받네",eng:"This is so freaking annoying"},note:"킹+받다.",cats:["인터넷","숏폼"],nsfw:false,free:true},
+  {word:"현타",roman:"hyeon-ta",meaning:"현실자각타임 → 'Reality check'",example:{kor:"갑자기 현타 온다",eng:"Reality just hit me hard"},note:"현실+자각+타임.",cats:["일상","인터넷"],nsfw:false,free:true},
+  {word:"TMI",roman:"tee-em-eye",meaning:"너무 많은 정보 → 'Too Much Information'",example:{kor:"야 그건 좀 TMI 아니야?",eng:"Bro that's a bit TMI"},note:"영어 약자 그대로.",cats:["인터넷","일상"],nsfw:false,free:true},
+  {word:"취저",roman:"chwi-jeo",meaning:"취향저격 → 'Exactly my type'",example:{kor:"이 노래 완전 취저야",eng:"This song is exactly my vibe"},note:"취향+저격.",cats:["K-POP","일상"],nsfw:false,free:true},
+  {word:"레전드",roman:"le-jeon-deu",meaning:"전설적이다 → 'Legendary'",example:{kor:"그 장면 진짜 레전드다",eng:"That scene was legendary"},note:"legend 한국식 발음.",cats:["K-POP","드라마"],nsfw:false,free:true},
+  {word:"찐",roman:"jjin",meaning:"진짜 → 'Real / genuine'",example:{kor:"걔 찐이야 찐",eng:"She's the real deal"},note:"진짜의 강조.",cats:["일상","인터넷"],nsfw:false,free:true},
+  {word:"최애",roman:"choe-ae",meaning:"최고로 사랑하는 것 → 'Ultimate fave'",example:{kor:"걔가 내 최애야",eng:"He's my ultimate fave"},note:"K-POP 팬덤 필수.",cats:["K-POP"],nsfw:false,free:false},
+  {word:"덕질",roman:"deok-jil",meaning:"팬 활동 → 'Stanning / fandom activities'",example:{kor:"요즘 덕질하느라 바빠",eng:"I've been busy with fandom stuff"},note:"오타쿠+질.",cats:["K-POP"],nsfw:false,free:false},
+  {word:"직캠",roman:"jik-kaem",meaning:"직접 찍은 영상 → 'Fancam'",example:{kor:"그 멤버 직캠 봤어?",eng:"Did you see that member's fancam?"},note:"직접+카메라.",cats:["K-POP"],nsfw:false,free:false},
+  {word:"사이다",roman:"sa-i-da",meaning:"속 시원한 상황 → 'So satisfying'",example:{kor:"그 장면 진짜 사이다야",eng:"That scene was so satisfying"},note:"드라마 필수어.",cats:["드라마","일상"],nsfw:false,free:false},
+  {word:"고구마",roman:"go-gu-ma",meaning:"답답한 상황 → 'So frustrating'",example:{kor:"이 드라마 고구마야",eng:"This drama is so frustrating"},note:"드라마 시청 필수어.",cats:["드라마","일상"],nsfw:false,free:false},
+  {word:"존나",roman:"jon-na",meaning:"매우 → 'F***ing / insanely'",example:{kor:"존나 피곤해",eng:"I'm f***ing exhausted"},note:"강한 욕. 공식 자리 금지.",cats:["욕설","인터넷"],nsfw:true,free:false},
+  {word:"씨발",roman:"ssi-bal",meaning:"한국판 F**k",example:{kor:"씨발 진짜? 대박",eng:"Holy f**k, seriously?"},note:"강한 욕설.",cats:["욕설","드라마"],nsfw:true,free:false},
+  {word:"미친",roman:"mi-chin",meaning:"미쳤다 → 'Crazy / insane'",example:{kor:"미친 이게 말이 돼?",eng:"This is insane"},note:"욕이지만 감탄으로도 씀.",cats:["욕설","일상"],nsfw:true,free:false},
 ];
 
-const allCats = ["전체","무료","욕설","숏폼","K-POP","드라마","인터넷","일상","학교","사회"];
+const quizData = [
+  {
+    source:"드라마",
+    show:"오징어 게임 (Squid Game)",
+    scene:"456번 참가자가 탈락 직전 친구에게",
+    sentence:"야 너 지금 완전 멘붕이지?",
+    highlight:"멘붕",
+    translation:"Hey, you're totally having a mental breakdown right now, aren't you?",
+    answer:"정신적 붕괴 / mental breakdown",
+    options:["정신적 붕괴 / mental breakdown","너무 배고프다 / super hungry","기분이 좋다 / feeling great","잠이 온다 / feeling sleepy"],
+    explanation:"멘붕 = 멘탈(mental) + 붕괴(collapse). 오징어 게임에서 극한 상황의 참가자들이 자주 쓰는 표현이에요."
+  },
+  {
+    source:"K-POP",
+    show:"BTS 팬 커뮤니티 트윗",
+    scene:"새 앨범 발매 후 아미들의 반응",
+    sentence:"이번 앨범 진짜 취저야... 존나 좋아",
+    highlight:"취저",
+    translation:"This album is literally exactly my taste... I f***ing love it",
+    answer:"취향저격 / exactly my type",
+    options:["취향저격 / exactly my type","너무 비싸다 / too expensive","모르겠다 / I don't know","별로다 / not great"],
+    explanation:"취저 = 취향(taste) + 저격(snipe). 내 취향을 저격했다는 뜻. BTS, 블랙핑크 팬덤에서 엄청 많이 써요."
+  },
+  {
+    source:"드라마",
+    show:"SKY 캐슬",
+    scene:"입시 스트레스 받는 학생이 친구에게",
+    sentence:"야 이번 시험 진짜 빡셌어. 현타 제대로 왔다",
+    highlight:"현타",
+    translation:"Bro this exam was brutal. Reality really hit me hard",
+    answer:"현실자각타임 / reality check",
+    options:["현실자각타임 / reality check","배가 고프다 / I'm hungry","신난다 / I'm excited","잘 잤다 / slept well"],
+    explanation:"현타 = 현실(reality) + 자각(awareness) + 타임(time). SKY캐슬처럼 입시 압박 드라마에서 자주 등장해요."
+  },
+  {
+    source:"밈/숏폼",
+    show:"트위터 밈",
+    scene:"친구가 황당한 말을 했을 때",
+    sentence:"헐 그게 말이 돼? 진짜 TMI 아니야 ㅋㅋ",
+    highlight:"TMI",
+    translation:"OMG is that even real? Isn't that a bit TMI lol",
+    answer:"Too Much Information / 너무 많은 정보",
+    options:["Too Much Information / 너무 많은 정보","To My Interest / 내 관심사","Tell Me Immediately / 바로 말해","Too Many Issues / 문제가 너무 많아"],
+    explanation:"TMI는 영어 약자 그대로 써요. 한국 MZ세대는 영어 약자를 한국어 문장에 그냥 섞어서 쓰는 게 특징이에요."
+  },
+  {
+    source:"드라마",
+    show:"이태원 클라쓰",
+    scene:"박새로이가 경쟁자에게 당당하게",
+    sentence:"솔까말 나 지금 하나도 안 무서워",
+    highlight:"솔까말",
+    translation:"Honestly, I'm not scared at all right now",
+    answer:"솔직히 말하자면 / honestly / TBH",
+    options:["솔직히 말하자면 / honestly / TBH","사실 무섭다 / actually scared","거짓말이야 / it's a lie","모르겠어 / I don't know"],
+    explanation:"솔까말 = 솔직히 + 까놓고 + 말하면. 이태원 클라쓰에서 박새로이 캐릭터처럼 직설적인 장면에서 자주 나와요."
+  },
+  {
+    source:"K-POP",
+    show:"블랙핑크 팬 반응",
+    scene:"제니 무대 직캠 보고 나서",
+    sentence:"와 지린다 진짜... 이게 말이 돼?",
+    highlight:"지린다",
+    translation:"Holy sh*t this is insane... How is this even real?",
+    answer:"너무 엄청나다 / absolutely mind-blowing",
+    options:["너무 엄청나다 / absolutely mind-blowing","너무 슬프다 / so sad","배가 고프다 / hungry","졸리다 / sleepy"],
+    explanation:"지린다 = 원래 생리적 표현이지만 MZ세대는 충격적으로 멋질 때 감탄사로 써요. K-POP 팬덤에서 엄청 많이 씀."
+  },
+  {
+    source:"드라마",
+    show:"사랑의 불시착",
+    scene:"리정혁이 윤세리한테 당황하며",
+    sentence:"이 사람이 진짜... 킹받네",
+    highlight:"킹받네",
+    translation:"This person seriously... is so freaking annoying",
+    answer:"열받다의 강조 / so freaking annoying",
+    options:["열받다의 강조 / so freaking annoying","너무 좋다 / love it","왕이다 / they're a king","배고프다 / I'm hungry"],
+    explanation:"킹받다 = 킹(king) + 열받다. 킹을 붙여서 강조하는 MZ식 표현. 사랑의 불시착 같은 로맨스 드라마 티격태격 장면에서 딱이에요."
+  },
+  {
+    source:"밈/숏폼",
+    show:"유튜브 쇼츠 댓글",
+    scene:"완벽한 영상을 보고 나서",
+    sentence:"이거 진짜 레전드다 ㅋㅋㅋ 찐이야 찐",
+    highlight:"레전드",
+    translation:"This is literally legendary lol, for real for real",
+    answer:"전설적이다 / legendary / iconic",
+    options:["전설적이다 / legendary / iconic","재미없다 / boring","오래됐다 / old","평범하다 / ordinary"],
+    explanation:"레전드 = legend 한국식 발음. 유튜브, 틱톡 댓글에서 엄청난 콘텐츠에 무조건 달리는 댓글이에요."
+  },
+];
+
+// 단어장
+const allCats = ["전체","무료","욕설","숏폼","K-POP","드라마","인터넷","일상","학교"];
 let activeCat = "전체";
 let isPro = false;
 
-function initCats(){
-  const el = document.getElementById("cats");
-  el.innerHTML = allCats.map(c=>`<div class="cat${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</div>`).join("");
+function showTab(t){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(p=>p.classList.remove('active'));
+  document.getElementById(t).classList.add('active');
+  const tabs = ['dict','quiz'];
+  document.querySelectorAll('.tab')[tabs.indexOf(t)].classList.add('active');
+  if(t==='quiz') initQuiz();
 }
 
-function setCat(c){activeCat=c;initCats();render();}
+function initCats(){
+  document.getElementById("cats").innerHTML = allCats.map(c=>`<div class="cat${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</div>`).join("");
+}
+function setCat(c){activeCat=c;initCats();renderDict();}
 
-function render(){
+function renderDict(){
   const q = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = data.filter(d=>{
+  let filtered = slangData.filter(d=>{
     if(activeCat==="무료") return d.free;
-    const matchCat = activeCat==="전체" || d.cats.includes(activeCat);
-    const matchQ = !q || d.word.includes(q) || d.roman.includes(q) || d.meaning.toLowerCase().includes(q);
-    return matchCat && matchQ;
+    const matchCat = activeCat==="전체"||d.cats.includes(activeCat);
+    const matchQ = !q||d.word.includes(q)||d.roman.includes(q)||d.meaning.toLowerCase().includes(q);
+    return matchCat&&matchQ;
   });
-
   const el = document.getElementById("list");
-  if(!filtered.length){el.innerHTML='<div class="empty">검색 결과 없음</div>';return;}
-
-  let html = "";
-  let shownLockBanner = false;
-
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:40px;color:#555">검색 결과 없음</div>';return;}
+  let html=""; let shown=false;
   filtered.forEach(d=>{
-    const locked = !isPro && !d.free;
-    if(locked && !shownLockBanner){
-      shownLockBanner = true;
-      html += `<div class="lock-banner">
-        <h3>🔒 PRO 전용 콘텐츠</h3>
-        <p>NSFW 욕설, K-POP 팬덤 슬랭, 드라마 표현 등<br>실제 한국인이 쓰는 모든 표현을 잠금해제하세요</p>
-        <button class="lock-btn" onclick="unlockPro()">PRO 시작하기 · $4.99/월</button>
-      </div>`;
-    }
-    html += `<div class="card${locked?' locked':''}" onclick="${locked?'':'openDetail('+data.indexOf(d)+')'}">
-      <div class="card-top">
-        <div class="word">${locked?'🔒 ???':d.word}${d.free?'<span class="free-badge">FREE</span>':''}</div>
-        <div class="badge ${d.nsfw?'nsfw':locked?'lock':'normal'}">${d.nsfw?'NSFW':locked?'PRO':'일반'}</div>
-      </div>
+    const locked=!isPro&&!d.free;
+    if(locked&&!shown){shown=true;html+=`<div class="lock-banner"><h3>🔒 PRO 전용 콘텐츠</h3><p>NSFW 욕설, K-POP 팬덤 슬랭, 드라마 표현 등<br>실제 한국인이 쓰는 모든 표현 잠금해제</p><button class="lock-btn" onclick="alert('결제 기능 준비 중! 곧 오픈합니다 🔥')">PRO 시작하기 · $4.99/월</button></div>`;}
+    html+=`<div class="card${locked?' locked':''}" onclick="${locked?'':'openDetail('+slangData.indexOf(d)+')'}">
+      <div class="card-top"><div class="word">${locked?'🔒 ???':d.word}${d.free?'<span class="free-badge">FREE</span>':''}</div>
+      <div class="badge ${d.nsfw?'nsfw':locked?'pro':'normal'}">${d.nsfw?'NSFW':locked?'PRO':'일반'}</div></div>
       <div class="roman">${locked?'잠금됨':d.roman}</div>
       <div class="meaning">${locked?'PRO 플랜으로 확인하세요':d.meaning.split('→')[1]||d.meaning}</div>
-      <div class="tags">${d.cats.map(c=>`<span class="tag">${c}</span>`).join("")}</div>
-    </div>`;
+      <div class="tags">${d.cats.map(c=>`<span class="tag">${c}</span>`).join("")}</div></div>`;
   });
-
-  el.innerHTML = html;
-}
-
-function unlockPro(){
-  alert("결제 기능 준비 중이에요! 곧 오픈합니다 🔥");
+  el.innerHTML=html;
 }
 
 function openDetail(i){
-  const d = data[i];
-  if(!isPro && !d.free) return;
-  document.getElementById("d-word").textContent = d.word;
-  document.getElementById("d-roman").textContent = d.roman;
-  document.getElementById("d-meaning").textContent = d.meaning;
-  document.getElementById("d-example").innerHTML = `<div class="bubble"><div class="kor">${d.example.kor}</div><div class="eng">${d.example.eng}</div></div>`;
-  document.getElementById("d-note").textContent = d.note;
-  document.getElementById("detail").style.display = "block";
+  const d=slangData[i];
+  if(!isPro&&!d.free)return;
+  document.getElementById("d-word").textContent=d.word;
+  document.getElementById("d-roman").textContent=d.roman;
+  document.getElementById("d-meaning").textContent=d.meaning;
+  document.getElementById("d-example").innerHTML=`<div class="bubble"><div class="kor">${d.example.kor}</div><div class="eng">${d.example.eng}</div></div>`;
+  document.getElementById("d-note").textContent=d.note;
+  document.getElementById("detail").style.display="block";
   window.scrollTo(0,0);
 }
-
 function closeDetail(){document.getElementById("detail").style.display="none";}
 
-initCats();render();
+// 퀴즈
+const sources=["전체","드라마","K-POP","밈/숏폼"];
+let activeSource="전체";
+let quizList=[];
+let qIndex=0;
+let score=0;
+let answered=false;
+
+function initQuiz(){
+  document.getElementById("quizSources").innerHTML=sources.map(s=>`<div class="src-btn${s===activeSource?' active':''}" onclick="setSource('${s}')">${s}</div>`).join("");
+  loadQuiz();
+}
+function setSource(s){activeSource=s;initQuiz();}
+function loadQuiz(){
+  quizList = activeSource==="전체" ? [...quizData] : quizData.filter(q=>q.source===activeSource);
+  quizList.sort(()=>Math.random()-0.5);
+  qIndex=0; score=0; answered=false;
+  renderQuiz();
+}
+function renderQuiz(){
+  const fill = Math.round((qIndex/quizList.length)*100);
+  document.getElementById("progressFill").style.width=fill+"%";
+  if(qIndex>=quizList.length){
+    document.getElementById("quizArea").innerHTML=`
+      <div class="quiz-score" style="display:block">
+        <h2>퀴즈 완료! 🎉</h2>
+        <div class="score-num">${score}/${quizList.length}</div>
+        <p>${score===quizList.length?'완벽해요! 진짜 MZ 고수!':score>=quizList.length/2?'잘했어요! 조금만 더 공부하면 완벽!':'한 번 더 도전해봐요!'}</p>
+        <button class="restart-btn" onclick="loadQuiz()">다시 도전하기 🔥</button>
+      </div>`;
+    return;
+  }
+  const q=quizList[qIndex];
+  const highlighted=q.sentence.replace(q.highlight,`<span class="highlight">${q.highlight}</span>`);
+  document.getElementById("quizArea").innerHTML=`
+    <div class="quiz-card">
+      <div class="quiz-source-tag">${q.source} · ${q.show}</div>
+      <div class="quiz-scene">${q.scene}</div>
+      <div class="quiz-sentence">${highlighted}</div>
+      <div class="quiz-eng">"${q.translation}"</div>
+    </div>
+    <div style="color:#888;font-size:12px;margin-bottom:10px;padding:0 4px">밑줄 친 <span style="color:#FF2D55;font-weight:700">${q.highlight}</span> 의 뜻은?</div>
+    <div class="options" id="options">
+      ${q.options.map((o,i)=>`<button class="option" onclick="selectAnswer(${i})">${o}</button>`).join("")}
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div style="background:#1a1a1a;border-radius:12px;padding:12px;margin-bottom:12px;display:none" id="explanation">
+      <div style="color:#888;font-size:11px;margin-bottom:4px">해설</div>
+      <div style="color:#eee;font-size:13px;line-height:1.6">${q.explanation}</div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+  `;
+}
+function selectAnswer(i){
+  if(answered)return;
+  answered=true;
+  const q=quizList[qIndex];
+  const opts=document.querySelectorAll('.option');
+  const correct=q.options.indexOf(q.answer);
+  const msg=document.getElementById("resultMsg");
+  const exp=document.getElementById("explanation");
+  if(i===correct){
+    opts[i].classList.add('correct');
+    msg.textContent="정답! 🎉 +1점";
+    msg.className="result-msg correct";
+    score++;
+  } else {
+    opts[i].classList.add('wrong');
+    opts[correct].classList.add('correct');
+    msg.textContent="오답 😅 정답을 확인하세요";
+    msg.className="result-msg wrong";
+  }
+  msg.style.display="block";
+  exp.style.display="block";
+  document.getElementById("nextBtn").style.display="block";
+}
+function nextQuestion(){qIndex++;answered=false;renderQuiz();}
+
+initCats();renderDict();
 </script>
 </body>
 </html>
