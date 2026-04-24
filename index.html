@@ -3,79 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Korean Slang Dictionary</title>
+<title>SlangKo — Real Korean Slang</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-width:430px;margin:0 auto}
-.header{padding:16px;background:#0f0f0f;position:sticky;top:0;z-index:10;border-bottom:1px solid #222}
-.header h1{font-size:20px;font-weight:800}
-.header p{font-size:11px;color:#888;margin-top:2px}
+.header{padding:16px;background:#0f0f0f;position:sticky;top:0;z-index:10;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center}
+.header-left h1{font-size:20px;font-weight:800}
+.header-left p{font-size:11px;color:#888;margin-top:2px}
+.progress-mini{text-align:right}
+.progress-mini span{font-size:11px;color:#FF2D55;font-weight:600}
+.progress-mini div{font-size:10px;color:#666;margin-top:1px}
 .tabs{display:flex;background:#0f0f0f;border-bottom:1px solid #222}
-.tab{flex:1;padding:12px;text-align:center;font-size:13px;color:#666;cursor:pointer;border-bottom:2px solid transparent}
+.tab{flex:1;padding:10px;text-align:center;font-size:12px;color:#666;cursor:pointer;border-bottom:2px solid transparent}
 .tab.active{color:#FF2D55;border-bottom:2px solid #FF2D55}
 .page{display:none}
 .page.active{display:block}
+
+/* Onboarding */
+.onboard{position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0f0f;z-index:200;max-width:430px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;padding:32px 24px}
+.onboard-step{display:none}
+.onboard-step.active{display:flex;flex-direction:column;align-items:center;text-align:center}
+.onboard-emoji{font-size:64px;margin-bottom:24px}
+.onboard-title{font-size:26px;font-weight:800;margin-bottom:12px;line-height:1.3}
+.onboard-desc{font-size:15px;color:#aaa;line-height:1.7;margin-bottom:32px}
+.onboard-btn{background:#FF2D55;color:#fff;border:none;border-radius:16px;padding:16px 32px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-bottom:12px}
+.onboard-skip{color:#555;font-size:13px;cursor:pointer;background:none;border:none;padding:8px}
+.onboard-dots{display:flex;gap:8px;margin-bottom:32px}
+.onboard-dot{width:8px;height:8px;border-radius:50%;background:#333}
+.onboard-dot.active{background:#FF2D55}
+
+/* Search */
 .search{margin:12px 16px}
 .search input{width:100%;padding:10px 16px;background:#1a1a1a;border:1px solid #333;border-radius:12px;color:#fff;font-size:14px;outline:none}
 .search input::placeholder{color:#555}
+
+/* Progress bar */
+.progress-wrap{margin:0 16px 12px;background:#1a1a1a;border-radius:12px;padding:12px 14px;border:1px solid #2a2a2a}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-label{font-size:12px;color:#aaa}
+.progress-pct{font-size:12px;font-weight:600;color:#FF2D55}
+.progress-bar-bg{background:#2a2a2a;border-radius:4px;height:6px}
+.progress-bar-fill{background:#FF2D55;height:6px;border-radius:4px;transition:width 0.5s}
+.progress-stats{display:flex;gap:16px;margin-top:8px}
+.pstat{font-size:11px;color:#666}
+.pstat span{color:#fff;font-weight:600}
+
+/* Cats */
 .cats{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto}
 .cats::-webkit-scrollbar{display:none}
 .cat{padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .cat.active{background:#FF2D55;border-color:#FF2D55;color:#fff}
+
+/* Cards */
 .list{padding:0 16px 16px}
-.card{background:#1a1a1a;border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid #2a2a2a;cursor:pointer}
+.card{background:#1a1a1a;border-radius:16px;padding:16px;margin-bottom:10px;border:1px solid #2a2a2a;cursor:pointer;position:relative}
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .word{font-size:22px;font-weight:800}
+.card-actions{display:flex;gap:6px;align-items:center}
 .badge{font-size:10px;padding:3px 8px;border-radius:10px;font-weight:600}
 .nsfw{background:#FF2D55;color:#fff}
 .normal{background:#30D158;color:#fff}
 .pro{background:#FFB800;color:#000}
-.travel{background:#0A84FF;color:#fff}
+.fav-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:2px;line-height:1}
 .roman{color:#888;font-size:12px;margin-bottom:2px}
 .pronounce{color:#FF9500;font-size:12px;margin-bottom:4px;font-weight:600}
 .meaning{color:#ccc;font-size:13px}
 .tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center}
 .tag{background:#242424;border:1px solid #333;border-radius:8px;padding:3px 8px;color:#aaa;font-size:10px}
 .speak-btn{background:#1a1a1a;border:1px solid #444;border-radius:8px;padding:3px 10px;color:#FF2D55;font-size:11px;cursor:pointer;margin-left:auto}
+.learned-badge{position:absolute;top:12px;right:12px;background:rgba(48,209,88,0.15);border:1px solid #30D158;border-radius:8px;padding:2px 8px;color:#30D158;font-size:10px}
+
+/* Lock */
 .lock-banner{background:#1a1a1a;border:1px solid #FF2D55;border-radius:16px;padding:20px;margin:10px 16px;text-align:center}
 .lock-banner h3{color:#FF2D55;font-size:16px;margin-bottom:8px}
 .lock-banner p{color:#aaa;font-size:12px;line-height:1.6;margin-bottom:14px}
 .lock-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
 .free-badge{background:#1a1a1a;border:1px solid #30D158;border-radius:8px;padding:2px 8px;color:#30D158;font-size:10px;margin-left:6px}
+
+/* Detail */
 .detail{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0f0f0f;z-index:100;overflow-y:auto;max-width:430px;margin:0 auto}
 .detail-inner{padding:20px 16px}
-.back{color:#FF2D55;font-size:14px;cursor:pointer;margin-bottom:16px;display:block}
+.detail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.back{color:#FF2D55;font-size:14px;cursor:pointer}
+.detail-fav{font-size:28px;cursor:pointer;background:none;border:none}
 .detail-word{font-size:40px;font-weight:800;margin-bottom:2px}
 .detail-roman{color:#888;font-size:14px;margin-bottom:4px}
 .detail-pronounce{color:#FF9500;font-size:15px;font-weight:700;margin-bottom:8px}
-.speak-big{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.speak-big{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;display:block;width:100%}
+.mark-learned{background:#1a1a1a;color:#30D158;border:1px solid #30D158;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;display:block;width:100%}
+.mark-learned.done{background:rgba(48,209,88,0.1)}
+.share-row{display:flex;gap:8px;margin-bottom:16px}
+.share-btn{flex:1;border:none;border-radius:10px;padding:10px;font-size:12px;font-weight:600;cursor:pointer}
+.share-tw{background:#1DA1F2;color:#fff}
+.share-ig{background:#E1306C;color:#fff}
+.share-copy{background:#333;color:#fff}
 .section{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #2a2a2a}
 .section-label{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
 .section-text{color:#eee;font-size:14px;line-height:1.6}
 .bubble{background:#FF2D55;border-radius:12px 12px 12px 2px;padding:10px 14px;margin-bottom:8px}
 .bubble .kor{color:#fff;font-size:14px;font-weight:600;margin-bottom:2px}
 .bubble .eng{color:rgba(255,255,255,0.8);font-size:12px}
+
+/* Quiz */
 .quiz-wrap{padding:16px}
 .quiz-source{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .src-btn{padding:6px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:12px;cursor:pointer;white-space:nowrap}
 .src-btn.active{background:#FF2D55;border-color:#FF2D55;color:#fff}
 .progress-bar{background:#222;border-radius:4px;height:4px;margin-bottom:16px}
 .progress-fill{background:#FF2D55;height:4px;border-radius:4px;transition:width 0.3s}
-.cinema-card{background:#000;border-radius:16px;overflow:hidden;margin-bottom:16px;border:1px solid #333}
+.cinema-card{background:#000;border-radius:16px;overflow:hidden;margin-bottom:12px;border:1px solid #333}
 .cinema-top{background:#111;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .cinema-show{color:#FF2D55;font-size:12px;font-weight:700}
 .cinema-yt{background:#FF0000;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
 .cinema-scene{background:#0a0a0a;padding:10px 14px;color:#aaa;font-size:11px;font-style:italic;line-height:1.5;border-bottom:1px solid #1a1a1a}
-.cinema-screen{background:#000;padding:24px 16px;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.cinema-screen{background:#000;padding:20px 16px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
 .cinema-subtitle{font-size:17px;font-weight:700;color:#fff;line-height:1.6}
 .cinema-highlight{color:#FFE600;font-size:19px;border-bottom:3px solid #FFE600}
-.cinema-eng{color:#aaa;font-size:12px;font-style:italic;margin-top:4px}
-.cinema-bottom{background:#111;padding:8px 14px;display:flex;justify-content:space-between;align-items:center}
+.cinema-eng{color:#aaa;font-size:12px;font-style:italic}
+.cinema-bottom{background:#111;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .cinema-ep{color:#666;font-size:11px}
 .cinema-type{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600}
 .type-drama{background:#534AB7;color:#CECBF6}
 .type-kpop{background:#0F6E56;color:#9FE1CB}
 .type-meme{background:#854F0B;color:#FAC775}
+.read-btn{background:#333;color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+.read-btn.playing{background:#FF2D55}
 .options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .option{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:14px 16px;color:#ddd;font-size:13px;cursor:pointer;text-align:left;width:100%}
 .option:hover{background:#242424}
@@ -87,39 +139,93 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 .explanation-box{background:#1a1a1a;border-radius:12px;padding:12px;margin-bottom:12px;display:none;border-left:3px solid #FF2D55}
 .exp-label{color:#FF2D55;font-size:11px;margin-bottom:4px;font-weight:600}
 .exp-text{color:#eee;font-size:13px;line-height:1.6}
+.word-audio{background:#242424;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none;align-items:center;justify-content:space-between}
+.word-audio-btn{background:#FF2D55;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer}
 .next-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;display:none}
 .quiz-score{background:#1a1a1a;border-radius:16px;padding:24px;text-align:center;border:1px solid #2a2a2a}
 .score-num{font-size:48px;font-weight:800;color:#FF2D55;margin:12px 0}
 .restart-btn{background:#FF2D55;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+
+/* Travel */
 .travel-wrap{padding:16px}
-.travel-cat{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .travel-section{margin-bottom:20px}
-.travel-section-title{font-size:13px;font-weight:700;color:#0A84FF;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.travel-card{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:8px;border:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center}
-.travel-left{}
+.travel-section-title{font-size:13px;font-weight:700;color:#0A84FF;margin-bottom:10px}
+.travel-card{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:8px;border:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .travel-korean{font-size:18px;font-weight:800;margin-bottom:2px}
 .travel-roman{color:#888;font-size:11px;margin-bottom:2px}
 .travel-pronounce{color:#FF9500;font-size:11px;font-weight:600;margin-bottom:3px}
 .travel-meaning{color:#ccc;font-size:12px}
 .travel-speak{background:#0A84FF;color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer;flex-shrink:0}
+
+/* Favorites */
+.empty-fav{text-align:center;padding:40px 20px;color:#555}
+.empty-fav div{font-size:40px;margin-bottom:12px}
 </style>
 </head>
 <body>
 
+<!-- ONBOARDING -->
+<div class="onboard" id="onboard">
+  <div class="onboard-dots" id="onboardDots"></div>
+  <div class="onboard-step active" id="step0">
+    <div class="onboard-emoji">🔥</div>
+    <div class="onboard-title">Real Korean.<br>No filter.</div>
+    <div class="onboard-desc">Learn the slang Koreans actually use — in dramas, K-POP, TikTok, and real life. Not the textbook stuff.</div>
+    <button class="onboard-btn" onclick="nextStep()">Let's go →</button>
+    <button class="onboard-skip" onclick="skipOnboard()">Skip</button>
+  </div>
+  <div class="onboard-step" id="step1">
+    <div class="onboard-emoji">🎬</div>
+    <div class="onboard-title">Learn from<br>real scenes</div>
+    <div class="onboard-desc">Squid Game. Itaewon Class. BLACKPINK. Quiz yourself on slang from actual K-content you already love.</div>
+    <button class="onboard-btn" onclick="nextStep()">Next →</button>
+    <button class="onboard-skip" onclick="skipOnboard()">Skip</button>
+  </div>
+  <div class="onboard-step" id="step2">
+    <div class="onboard-emoji">✈️</div>
+    <div class="onboard-title">Visiting Korea?<br>We got you.</div>
+    <div class="onboard-desc">From ordering food to flirting — hear the pronunciation and walk into Seoul ready.</div>
+    <button class="onboard-btn" onclick="nextStep()">Next →</button>
+    <button class="onboard-skip" onclick="skipOnboard()">Skip</button>
+  </div>
+  <div class="onboard-step" id="step3">
+    <div class="onboard-emoji">🔒</div>
+    <div class="onboard-title">Free to start.<br>PRO to go deep.</div>
+    <div class="onboard-desc">20 slang words free. Unlock 80+ more — including NSFW, K-POP fandom, and drama terms — with PRO.</div>
+    <button class="onboard-btn" onclick="skipOnboard()">Start for free 🚀</button>
+  </div>
+</div>
+
 <div class="header">
-  <h1>MZ Slang Dictionary 🔥</h1>
-  <p>Real Korean used by Gen Z · Tap 🔊 to hear it</p>
+  <div class="header-left">
+    <h1>SlangKo 🔥</h1>
+    <p>Real Korean · Gen Z approved</p>
+  </div>
+  <div class="progress-mini">
+    <span id="headerPct">0%</span>
+    <div id="headerLearned">learned</div>
+  </div>
 </div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('dict')">Dictionary</div>
   <div class="tab" onclick="showTab('quiz')">Quiz 🎬</div>
   <div class="tab" onclick="showTab('travel')">Travel ✈️</div>
+  <div class="tab" onclick="showTab('favs')">Saved ❤️</div>
 </div>
 
 <!-- DICTIONARY -->
 <div id="dict" class="page active">
   <div class="search"><input type="text" id="searchInput" placeholder="Search slang..." oninput="renderDict()"></div>
+  <div class="progress-wrap">
+    <div class="progress-top"><span class="progress-label">Learning progress</span><span class="progress-pct" id="progPct">0%</span></div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progFill" style="width:0%"></div></div>
+    <div class="progress-stats">
+      <div class="pstat">Learned: <span id="learnedCount">0</span></div>
+      <div class="pstat">Saved: <span id="savedCount">0</span></div>
+      <div class="pstat">Total: <span id="totalCount">0</span></div>
+    </div>
+  </div>
   <div class="cats" id="cats"></div>
   <div class="list" id="list"></div>
 </div>
@@ -136,19 +242,35 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 <!-- TRAVEL -->
 <div id="travel" class="page">
   <div class="travel-wrap">
-    <div class="travel-cat" id="travelCats"></div>
+    <div class="cats" id="travelCats"></div>
     <div id="travelList"></div>
+  </div>
+</div>
+
+<!-- FAVORITES -->
+<div id="favs" class="page">
+  <div style="padding:16px">
+    <div id="favList"></div>
   </div>
 </div>
 
 <!-- DETAIL -->
 <div class="detail" id="detail">
   <div class="detail-inner">
-    <span class="back" onclick="closeDetail()">← Back</span>
+    <div class="detail-top">
+      <span class="back" onclick="closeDetail()">← Back</span>
+      <button class="detail-fav" id="detailFavBtn" onclick="toggleFavCurrent()">🤍</button>
+    </div>
     <div class="detail-word" id="d-word"></div>
     <div class="detail-roman" id="d-roman"></div>
     <div class="detail-pronounce" id="d-pronounce"></div>
-    <button class="speak-big" id="d-speak" onclick="speakWord()">🔊 Hear it in Korean</button>
+    <button class="speak-big" onclick="speakCurrent()">🔊 Hear it in Korean</button>
+    <button class="mark-learned" id="markLearnedBtn" onclick="toggleLearnedCurrent()">✓ Mark as learned</button>
+    <div class="share-row">
+      <button class="share-btn share-tw" onclick="shareTwitter()">Twitter/X</button>
+      <button class="share-btn share-ig" onclick="shareIG()">Instagram</button>
+      <button class="share-btn share-copy" onclick="shareCopy()">Copy link</button>
+    </div>
     <div class="section"><div class="section-label">Meaning</div><div class="section-text" id="d-meaning"></div></div>
     <div class="section"><div class="section-label">Example</div><div id="d-example"></div></div>
     <div class="section"><div class="section-label">Warning</div><div class="section-text" id="d-note"></div></div>
@@ -156,95 +278,169 @@ body{background:#0f0f0f;color:#fff;font-family:-apple-system,sans-serif;max-widt
 </div>
 
 <script>
+// State
+let favorites=JSON.parse(localStorage.getItem('slangko-favs')||'[]');
+let learned=JSON.parse(localStorage.getItem('slangko-learned')||'[]');
+let currentIdx=-1;
+let currentWord='';
+let activeCat='All';
+let isPro=false;
+
 // TTS
-function speak(text, rate=0.85){
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='ko-KR'; u.rate=rate;
+function speak(text,rate){
+  rate=rate||0.85;
   window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='ko-KR';u.rate=rate;
   window.speechSynthesis.speak(u);
 }
-let currentWord='';
-function speakWord(){speak(currentWord);}
+function speakCurrent(){speak(currentWord);}
+
+// Onboarding
+let onboardStep=0;
+const totalSteps=4;
+function initOnboard(){
+  if(localStorage.getItem('slangko-onboarded')){
+    document.getElementById('onboard').style.display='none';
+    return;
+  }
+  const dots=document.getElementById('onboardDots');
+  dots.innerHTML=Array(totalSteps).fill(0).map((_,i)=>`<div class="onboard-dot${i===0?' active':''}"></div>`).join('');
+}
+function nextStep(){
+  document.getElementById('step'+onboardStep).classList.remove('active');
+  onboardStep++;
+  if(onboardStep>=totalSteps){skipOnboard();return;}
+  document.getElementById('step'+onboardStep).classList.add('active');
+  document.querySelectorAll('.onboard-dot').forEach((d,i)=>d.classList.toggle('active',i===onboardStep));
+}
+function skipOnboard(){
+  localStorage.setItem('slangko-onboarded','1');
+  document.getElementById('onboard').style.display='none';
+}
 
 const slangData=[
-  {word:"짱",roman:"jjang",pronounce:"JJANG (like 'John' without the 'oh')",meaning:"The best / awesome",example:{kor:"이 가게 음식이 진짜 짱이야!",eng:"The food here is seriously the best!"},note:"Casual. Safe to use with friends.",cats:["Everyday","Shorts"],nsfw:false,free:true},
-  {word:"헐",roman:"heol",pronounce:"HUHL (like 'hull')",meaning:"OMG / No way / What the...",example:{kor:"헐, 진짜로?",eng:"OMG, seriously?"},note:"Express shock or disbelief. Everyone uses it.",cats:["Everyday","Drama"],nsfw:false,free:true},
+  {word:"짱",roman:"jjang",pronounce:"JJANG",meaning:"The best / awesome",example:{kor:"이 가게 음식이 진짜 짱이야!",eng:"The food here is seriously the best!"},note:"Casual. Safe to use with friends.",cats:["Everyday","Shorts"],nsfw:false,free:true},
+  {word:"헐",roman:"heol",pronounce:"HUHL",meaning:"OMG / No way",example:{kor:"헐, 진짜로?",eng:"OMG, seriously?"},note:"Express shock or disbelief.",cats:["Everyday","Drama"],nsfw:false,free:true},
   {word:"꿀잼",roman:"kkul-jaem",pronounce:"KKUL-JEM",meaning:"Super fun / a total blast",example:{kor:"이 영화 완전 꿀잼이야",eng:"This movie is so much fun"},note:"꿀(honey)+재미(fun). Opposite is 노잼.",cats:["Everyday","Shorts"],nsfw:false,free:true},
   {word:"노잼",roman:"no-jaem",pronounce:"NO-JEM",meaning:"So boring / not fun at all",example:{kor:"그 드라마는 노잼이었어",eng:"That drama was so boring"},note:"Opposite of 꿀잼.",cats:["Everyday","Drama"],nsfw:false,free:true},
-  {word:"느좋",roman:"neu-jo",pronounce:"NEU-JO (neu rhymes with 'duh')",meaning:"Vibes are good / feeling it",example:{kor:"오늘 콘서트 진짜 느좋",eng:"Today's concert vibes are SO good"},note:"Short for 느낌 좋다. Casual/online only.",cats:["Shorts","K-POP"],nsfw:false,free:true},
+  {word:"느좋",roman:"neu-jo",pronounce:"NEU-JO",meaning:"Vibes are good / feeling it",example:{kor:"오늘 콘서트 진짜 느좋",eng:"Today's concert vibes are SO good"},note:"Short for 느낌 좋다. Casual/online only.",cats:["Shorts","K-POP"],nsfw:false,free:true},
   {word:"멘붕",roman:"men-bung",pronounce:"MEN-BUNG",meaning:"Mental breakdown / mind blown",example:{kor:"시험 망 멘붕이야",eng:"I bombed the exam, total meltdown"},note:"멘탈(mental)+붕괴(collapse).",cats:["Everyday","Internet"],nsfw:false,free:true},
   {word:"솔까말",roman:"sol-kka-mal",pronounce:"SOL-KKA-MAL",meaning:"Honestly / TBH",example:{kor:"솔까말, 나 피곤해",eng:"TBH, I'm really tired"},note:"Short for 솔직히 까놓고 말하면.",cats:["Internet","Everyday"],nsfw:false,free:true},
   {word:"인싸",roman:"in-ssa",pronounce:"IN-SSA",meaning:"Popular kid / social butterfly",example:{kor:"걔는 완전 인싸야",eng:"She's super popular"},note:"From 'insider'. Opposite is 아싸.",cats:["Everyday","School"],nsfw:false,free:true},
   {word:"아싸",roman:"a-ssa",pronounce:"AH-SSA",meaning:"Loner / outsider",example:{kor:"나는 좀 아싸인 것 같아",eng:"I think I'm kind of a loner"},note:"From 'outsider'. Opposite of 인싸.",cats:["Everyday","School"],nsfw:false,free:true},
-  {word:"킹받다",roman:"king-bat-da",pronounce:"KING-BAT-DA",meaning:"So freaking annoying",example:{kor:"진짜 킹받네",eng:"This is so freaking annoying"},note:"킹(king)+열받다. Humorous expression.",cats:["Internet","Shorts"],nsfw:false,free:true},
+  {word:"킹받다",roman:"king-bat-da",pronounce:"KING-BAT-DA",meaning:"So freaking annoying",example:{kor:"진짜 킹받네",eng:"This is so freaking annoying"},note:"킹(king)+열받다. Humorous.",cats:["Internet","Shorts"],nsfw:false,free:true},
   {word:"현타",roman:"hyeon-ta",pronounce:"HYUN-TA",meaning:"Reality check / hitting different",example:{kor:"갑자기 현타 온다",eng:"Reality just hit me hard"},note:"Short for 현실자각타임.",cats:["Everyday","Internet"],nsfw:false,free:true},
-  {word:"TMI",roman:"tee-em-eye",pronounce:"TEE-EM-EYE",meaning:"Too Much Information",example:{kor:"야 그건 좀 TMI 아니야?",eng:"Bro that's a bit TMI"},note:"English abbreviation used directly in Korean.",cats:["Internet","Everyday"],nsfw:false,free:true},
+  {word:"TMI",roman:"tee-em-eye",pronounce:"TEE-EM-EYE",meaning:"Too Much Information",example:{kor:"야 그건 좀 TMI 아니야?",eng:"Bro that's a bit TMI"},note:"English abbreviation used in Korean.",cats:["Internet","Everyday"],nsfw:false,free:true},
   {word:"취저",roman:"chwi-jeo",pronounce:"CHWI-JUH",meaning:"Exactly my type / hits my taste",example:{kor:"이 노래 완전 취저야",eng:"This song is exactly my vibe"},note:"취향(taste)+저격(snipe).",cats:["K-POP","Everyday"],nsfw:false,free:true},
   {word:"레전드",roman:"le-jeon-deu",pronounce:"REH-JUN-DU",meaning:"Legendary / iconic",example:{kor:"그 장면 진짜 레전드다",eng:"That scene was legendary"},note:"'Legend' in Korean pronunciation.",cats:["K-POP","Drama"],nsfw:false,free:true},
-  {word:"찐",roman:"jjin",pronounce:"JJIN (like 'Jean' but harder)",meaning:"Real / genuine / legit",example:{kor:"걔 찐이야 찐",eng:"She's the real deal"},note:"Emphasizes authenticity.",cats:["Everyday","Internet"],nsfw:false,free:true},
-  {word:"최애",roman:"choe-ae",pronounce:"CHWAY (rhymes with 'way')",meaning:"Ultimate fave / number one bias",example:{kor:"걔가 내 최애야",eng:"He's my ultimate fave"},note:"Essential K-POP fandom word.",cats:["K-POP"],nsfw:false,free:false},
+  {word:"찐",roman:"jjin",pronounce:"JJIN",meaning:"Real / genuine / legit",example:{kor:"걔 찐이야 찐",eng:"She's the real deal"},note:"Emphasizes authenticity.",cats:["Everyday","Internet"],nsfw:false,free:true},
+  {word:"빡세다",roman:"bbak-se-da",pronounce:"BBAK-SEH-DA",meaning:"Intense / brutal / tough",example:{kor:"이번 시험 진짜 빡셌어",eng:"This exam was brutally hard"},note:"Used when something is very intense.",cats:["Everyday","School"],nsfw:false,free:true},
+  {word:"핵노잼",roman:"haek-no-jaem",pronounce:"HEK-NO-JEM",meaning:"Absolutely zero fun / nuclear boring",example:{kor:"이 수업 핵노잼이야",eng:"This class has zero fun"},note:"핵(nuclear)+노잼. Ultimate boredom.",cats:["Everyday","School"],nsfw:false,free:true},
+  {word:"갑질",roman:"gap-jil",pronounce:"GAP-JIL",meaning:"Power abuse / acting entitled",example:{kor:"그 상사는 갑질이 심해",eng:"That boss seriously abuses power"},note:"Sensitive social topic. In news too.",cats:["Social","Drama"],nsfw:false,free:true},
+  {word:"꿀팁",roman:"kkul-tip",pronounce:"KKUL-TIP",meaning:"Life hack / golden tip",example:{kor:"그거 꿀팁이에요!",eng:"That's such a useful tip!"},note:"꿀(honey)+tip. All over YouTube.",cats:["Internet","Shorts"],nsfw:false,free:true},
+  {word:"복붙",roman:"bok-but",pronounce:"BOK-BUT",meaning:"Copy-paste",example:{kor:"그냥 복붙했어",eng:"I just copy-pasted it"},note:"복사+붙여넣기. Internet slang.",cats:["Internet"],nsfw:false,free:true},
+  {word:"최애",roman:"choe-ae",pronounce:"CHWAY",meaning:"Ultimate fave / number one bias",example:{kor:"걔가 내 최애야",eng:"He's my ultimate fave"},note:"Essential K-POP fandom word.",cats:["K-POP"],nsfw:false,free:false},
   {word:"덕질",roman:"deok-jil",pronounce:"DUCK-JIL",meaning:"Fandom activities / stanning",example:{kor:"요즘 덕질하느라 바빠",eng:"I've been busy with fandom stuff"},note:"오타쿠+질(activity).",cats:["K-POP"],nsfw:false,free:false},
   {word:"직캠",roman:"jik-kaem",pronounce:"JIK-KEM",meaning:"Fancam",example:{kor:"그 멤버 직캠 봤어?",eng:"Did you see that member's fancam?"},note:"직접(direct)+카메라(camera).",cats:["K-POP"],nsfw:false,free:false},
+  {word:"입덕",roman:"ip-deok",pronounce:"IP-DUCK",meaning:"To become a fan / getting into a group",example:{kor:"나 그 그룹 입덕했어",eng:"I just got into that group"},note:"Opposite of 탈덕.",cats:["K-POP"],nsfw:false,free:false},
+  {word:"탈덕",roman:"tal-deok",pronounce:"TAL-DUCK",meaning:"To leave a fandom",example:{kor:"그 그룹 탈덕했어",eng:"I left that fandom"},note:"Opposite of 입덕.",cats:["K-POP"],nsfw:false,free:false},
   {word:"사이다",roman:"sa-i-da",pronounce:"SA-EE-DA",meaning:"So satisfying / refreshing moment",example:{kor:"그 장면 진짜 사이다야",eng:"That scene was so satisfying"},note:"Like soda — refreshing. Drama essential.",cats:["Drama","Everyday"],nsfw:false,free:false},
-  {word:"고구마",roman:"go-gu-ma",pronounce:"GO-GOO-MA",meaning:"So frustrating / suffocating",example:{kor:"이 드라마 고구마야",eng:"This drama is so frustrating"},note:"Like eating dry sweet potato — stuffy.",cats:["Drama","Everyday"],nsfw:false,free:false},
-  {word:"지린다",roman:"ji-rin-da",pronounce:"JEE-RIN-DA",meaning:"Absolutely mind-blowing / insane",example:{kor:"그 공연 진짜 지린다",eng:"That performance was absolutely insane"},note:"Originally bodily expression, now = amazement.",cats:["K-POP","Shorts"],nsfw:false,free:false},
-  {word:"존나",roman:"jon-na",pronounce:"JOHN-NA",meaning:"F***ing / insanely (intensifier)",example:{kor:"존나 피곤해",eng:"I'm f***ing exhausted"},note:"Strong profanity. Never use formally or with elders.",cats:["Profanity","Internet"],nsfw:true,free:false},
+  {word:"고구마",roman:"go-gu-ma",pronounce:"GO-GOO-MA",meaning:"So frustrating / suffocating",example:{kor:"이 드라마 고구마야",eng:"This drama is so frustrating"},note:"Like eating dry sweet potato.",cats:["Drama","Everyday"],nsfw:false,free:false},
+  {word:"막장",roman:"mak-jang",pronounce:"MAK-JANG",meaning:"Trashy / over-the-top drama",example:{kor:"이 드라마 완전 막장이야",eng:"This drama is totally over the top"},note:"Refers to dramatic, outrageous storylines.",cats:["Drama"],nsfw:false,free:false},
+  {word:"현실자각",roman:"hyeon-sil-ja-gak",pronounce:"HYUN-SIL-JA-GAK",meaning:"Facing reality / wake-up call",example:{kor:"현실자각 좀 해라",eng:"Wake up and face reality"},note:"Longer form of 현타.",cats:["Everyday","Drama"],nsfw:false,free:false},
+  {word:"넘사벽",roman:"neom-sa-byeok",pronounce:"NUM-SA-BYUK",meaning:"On a whole other level / incomparable",example:{kor:"걔 실력은 넘사벽이야",eng:"Her skills are on a whole other level"},note:"넘을 수 없는 사차원의 벽 (wall you can't cross).",cats:["K-POP","Everyday"],nsfw:false,free:false},
+  {word:"팩폭",roman:"paek-pok",pronounce:"PEK-POK",meaning:"Brutal truth bomb / hitting with facts",example:{kor:"야 그거 팩폭이야",eng:"Bro that's a brutal truth bomb"},note:"팩트(fact)+폭행(assault).",cats:["Internet","Everyday"],nsfw:false,free:false},
+  {word:"스불재",roman:"seu-bul-jae",pronounce:"SUH-BUL-JEH",meaning:"Self-inflicted disaster",example:{kor:"완전 스불재네 ㅋㅋ",eng:"You literally brought this on yourself lol"},note:"스스로+불러온+재앙.",cats:["Internet","Everyday"],nsfw:false,free:false},
+  {word:"억텐",roman:"eok-ten",pronounce:"UK-TEN",meaning:"Forced hype / fake energy",example:{kor:"저 사람 억텐이야",eng:"That person's energy is so forced"},note:"억지+텐션.",cats:["Everyday","K-POP"],nsfw:false,free:false},
+  {word:"찐따",roman:"jjin-tta",pronounce:"JJIN-TTA",meaning:"Complete idiot (very offensive)",example:{kor:"야 찐따같이 왜 그래",eng:"Why are you acting like a complete idiot"},note:"Extremely offensive. Avoid unless very close friends.",cats:["Profanity"],nsfw:true,free:false},
+  {word:"지린다",roman:"ji-rin-da",pronounce:"JEE-RIN-DA",meaning:"Absolutely mind-blowing / insane",example:{kor:"그 공연 진짜 지린다",eng:"That performance was absolutely insane"},note:"Originally bodily, now = amazement.",cats:["K-POP","Shorts"],nsfw:false,free:false},
+  {word:"쩐다",roman:"jjeonda",pronounce:"JJUN-DA",meaning:"That's sick / incredible",example:{kor:"우리 쩐다는 거 맞지?",eng:"We're pretty awesome, right?"},note:"Positive exclamation. Young gen only.",cats:["K-POP","Everyday"],nsfw:false,free:false},
+  {word:"존나",roman:"jon-na",pronounce:"JOHN-NA",meaning:"F***ing / insanely (intensifier)",example:{kor:"존나 피곤해",eng:"I'm f***ing exhausted"},note:"Strong profanity. Never use formally.",cats:["Profanity","Internet"],nsfw:true,free:false},
   {word:"씨발",roman:"ssi-bal",pronounce:"SSI-BAL",meaning:"F**k — shock, anger, amazement",example:{kor:"씨발 진짜? 대박",eng:"Holy f**k, seriously?"},note:"Strong profanity. Common in dramas.",cats:["Profanity","Drama"],nsfw:true,free:false},
   {word:"미친",roman:"mi-chin",pronounce:"MI-CHIN",meaning:"Crazy / insane / WTF",example:{kor:"미친 이게 말이 돼?",eng:"This is insane"},note:"Profanity but also used as amazement.",cats:["Profanity","Everyday"],nsfw:true,free:false},
-  {word:"뒤지다",roman:"dwi-ji-da",pronounce:"DWEE-JI-DA",meaning:"I'm dying (of laughter/shock)",example:{kor:"웃겨서 뒤질 것 같아",eng:"I'm dying of laughter"},note:"Strong expression. Used hyperbolically.",cats:["Profanity","Everyday"],nsfw:true,free:false},
+  {word:"뒤지다",roman:"dwi-ji-da",pronounce:"DWEE-JI-DA",meaning:"I'm dying (of laughter/shock)",example:{kor:"웃겨서 뒤질 것 같아",eng:"I'm dying of laughter"},note:"Strong. Used hyperbolically.",cats:["Profanity","Everyday"],nsfw:true,free:false},
+  {word:"개같다",roman:"gae-gat-da",pronounce:"GEH-GAT-DA",meaning:"Total crap / absolute garbage",example:{kor:"오늘 날씨 개같네",eng:"The weather today is garbage"},note:"개(dog)+같다. Strong negative.",cats:["Profanity","Everyday"],nsfw:true,free:false},
+  {word:"극혐",roman:"geuk-hyeom",pronounce:"GEUK-HYUM",meaning:"Extreme disgust / I hate this so much",example:{kor:"이거 진짜 극혐이야",eng:"This is absolutely disgusting"},note:"극도로+혐오. Very strong dislike.",cats:["Internet","Everyday"],nsfw:false,free:false},
+  {word:"현생",roman:"hyeon-saeng",pronounce:"HYUN-SENG",meaning:"Real life (as opposed to online life)",example:{kor:"현생 살아야지",eng:"I need to go live my real life"},note:"현실+생활. Used when logging off.",cats:["Internet"],nsfw:false,free:false},
+  {word:"갓생",roman:"gat-saeng",pronounce:"GAT-SENG",meaning:"God-tier life / living your best life",example:{kor:"갓생 살고 싶다",eng:"I want to live my best life"},note:"God+생활. Productive lifestyle trend.",cats:["Internet","Shorts"],nsfw:false,free:false},
+  {word:"무지출",roman:"mu-ji-chul",pronounce:"MOO-JI-CHUL",meaning:"Zero spending day",example:{kor:"오늘 무지출 챌린지",eng:"Zero spending challenge today"},note:"무(zero)+지출(spending). TikTok trend.",cats:["Shorts","Internet"],nsfw:false,free:false},
+  {word:"오늘도 무사히",roman:"o-neul-do mu-sa-hi",pronounce:"OH-NEUL-DO MOO-SA-HEE",meaning:"Made it through today safely",example:{kor:"오늘도 무사히 퇴근",eng:"Made it through another day at work"},note:"Common phrase after surviving a tough day.",cats:["Everyday"],nsfw:false,free:false},
+  {word:"퇴준생",roman:"toe-jun-saeng",pronounce:"TWEH-JUN-SENG",meaning:"Someone preparing to quit their job",example:{kor:"나 완전 퇴준생이야",eng:"I'm totally preparing to quit my job"},note:"퇴사+준비+생. Very relatable term.",cats:["Social","Everyday"],nsfw:false,free:false},
+  {word:"워라밸",roman:"wo-ra-baek",pronounce:"WUH-RA-BEL",meaning:"Work-life balance",example:{kor:"워라밸이 중요해",eng:"Work-life balance is important"},note:"Work+Life+Balance Korean pronunciation.",cats:["Social","Everyday"],nsfw:false,free:false},
+  {word:"소확행",roman:"so-hwak-haeng",pronounce:"SO-HWAK-HENG",meaning:"Small but certain happiness",example:{kor:"소확행을 즐겨요",eng:"I enjoy small everyday happiness"},note:"소小+확실한+행복. Millennial/MZ concept.",cats:["Everyday","Social"],nsfw:false,free:false},
+  {word:"혼밥",roman:"hon-bap",pronounce:"HON-BAP",meaning:"Eating alone",example:{kor:"오늘 혼밥했어",eng:"I ate alone today"},note:"혼자+밥. Normalized in Korean culture.",cats:["Everyday"],nsfw:false,free:false},
+  {word:"혼술",roman:"hon-sul",pronounce:"HON-SUL",meaning:"Drinking alone",example:{kor:"오늘 혼술이나 해야겠다",eng:"Guess I'll drink alone tonight"},note:"혼자+술. Often paired with 혼밥.",cats:["Everyday"],nsfw:false,free:false},
 ];
 
 const quizData=[
-  {source:"Drama",show:"오징어 게임 (Squid Game)",episode:"Season 1 · EP 3",scene:"Player 456 to his friend before elimination",sentence:"야 너 지금 완전 멘붕이지?",highlight:"멘붕",translation:"Hey, you're totally having a mental breakdown right now, aren't you?",answer:"Mental breakdown / mind blown",options:["Mental breakdown / mind blown","Super hungry","Feeling great","Falling asleep"],explanation:"멘붕 = 멘탈(mental) + 붕괴(collapse). Squid Game players use it constantly under extreme pressure.",ytUrl:"https://www.youtube.com/watch?v=oqxAJKy0ii4",type:"drama"},
-  {source:"K-POP",show:"BTS ARMY Twitter",episode:"After Map of the Soul drop",scene:"Fan reaction after the new album",sentence:"이번 앨범 진짜 취저야... 존나 좋아",highlight:"취저",translation:"This album is literally exactly my taste... I f***ing love it",answer:"Exactly my type / hits my taste",options:["Exactly my type / hits my taste","Way too expensive","I don't know","Not that great"],explanation:"취저 = 취향(taste) + 저격(snipe). Means something perfectly matches your taste. Essential in K-POP fandom.",ytUrl:"https://www.youtube.com/watch?v=7C2z4GqqS5E",type:"kpop"},
-  {source:"Drama",show:"SKY 캐슬",episode:"Season 1 · EP 8",scene:"Student venting to friend after brutal exam",sentence:"야 이번 시험 진짜 빡셌어. 현타 제대로 왔다",highlight:"현타",translation:"Bro this exam was brutal. Reality really hit me hard",answer:"Reality check / hitting different",options:["Reality check / hitting different","I'm so hungry","I'm so excited","I slept well"],explanation:"현타 = 현실(reality) + 자각(awareness) + 타임(time). That moment reality suddenly hits you.",ytUrl:"https://www.youtube.com/watch?v=XTHt8ZMBsQE",type:"drama"},
-  {source:"Meme",show:"Korean Twitter 트위터",episode:"Viral 2024",scene:"When a friend says something absolutely wild",sentence:"헐 그게 말이 돼? 진짜 TMI 아니야 ㅋㅋ",highlight:"TMI",translation:"OMG is that even real? Isn't that a bit TMI lol",answer:"Too Much Information",options:["Too Much Information","To My Interest","Tell Me Immediately","Too Many Issues"],explanation:"Korean Gen Z drops English abbreviations directly into sentences. TMI, LOL, MBTI — all used raw in Korean.",ytUrl:"https://www.youtube.com/watch?v=f5uFhGbKzEg",type:"meme"},
-  {source:"Drama",show:"이태원 클라쓰 (Itaewon Class)",episode:"Season 1 · EP 5",scene:"Park Saeroyi stands his ground against a rival",sentence:"솔까말 나 지금 하나도 안 무서워",highlight:"솔까말",translation:"Honestly, I'm not scared at all right now",answer:"Honestly / TBH / straight up",options:["Honestly / TBH / straight up","Actually I'm scared","That's a lie","I don't know"],explanation:"솔까말 = 솔직히 + 까놓고 + 말하면. Park Saeroyi's direct personality makes this word perfect.",ytUrl:"https://www.youtube.com/watch?v=VHqCIt4JKLE",type:"drama"},
-  {source:"K-POP",show:"BLACKPINK 블랙핑크",episode:"Jennie Solo fancam",scene:"Fans watching Jennie's stage",sentence:"와 지린다 진짜... 이게 말이 돼?",highlight:"지린다",translation:"Holy sh*t this is insane... How is this real?",answer:"Absolutely mind-blowing / insane",options:["Absolutely mind-blowing / insane","So sad","I'm hungry","I'm sleepy"],explanation:"지린다 = originally bodily, but Gen Z uses it when something is shockingly amazing. BLACKPINK fancam comments are full of this.",ytUrl:"https://www.youtube.com/watch?v=DQFBs_kxE84",type:"kpop"},
-  {source:"Drama",show:"사랑의 불시착 (Crash Landing on You)",episode:"Season 1 · EP 4",scene:"Ri Jeong Hyeok reacts to Yoon Se-ri",sentence:"이 사람이 진짜... 킹받네",highlight:"킹받네",translation:"This person seriously... is so freaking annoying",answer:"So freaking annoying / infuriating",options:["So freaking annoying / infuriating","I love them","They're a king","I'm hungry"],explanation:"킹받다 = 킹(king) + 열받다(annoyed). Perfect for CLOY's bickering romance scenes.",ytUrl:"https://www.youtube.com/watch?v=lWKvKCpEj4s",type:"drama"},
-  {source:"Meme",show:"YouTube Shorts 유튜브",episode:"Trending 2024",scene:"Comment on a perfectly executed video",sentence:"이거 진짜 레전드다 ㅋㅋㅋ 찐이야 찐",highlight:"레전드",translation:"This is literally legendary lol, for real",answer:"Legendary / iconic",options:["Legendary / iconic","So boring","Very old","Ordinary"],explanation:"레전드(legend) is the highest compliment in Korean internet culture. Pair with 찐(real) for the ultimate combo.",ytUrl:"https://www.youtube.com/watch?v=9bZkp7q19f0",type:"meme"},
+  {source:"Drama",show:"오징어 게임 (Squid Game)",episode:"Season 1 · EP 3",scene:"Player 456 to his friend before elimination",sentence:"야 너 지금 완전 멘붕이지?",highlight:"멘붕",translation:"Hey, you're totally having a mental breakdown right now, aren't you?",answer:"Mental breakdown / mind blown",options:["Mental breakdown / mind blown","Super hungry","Feeling great","Falling asleep"],explanation:"멘붕 = 멘탈(mental) + 붕괴(collapse). Squid Game players use it under extreme pressure.",ytUrl:"https://www.youtube.com/watch?v=oqxAJKy0ii4",type:"drama"},
+  {source:"K-POP",show:"BTS ARMY Twitter",episode:"After Map of the Soul drop",scene:"Fan reaction after the new album",sentence:"이번 앨범 진짜 취저야... 존나 좋아",highlight:"취저",translation:"This album is literally exactly my taste... I f***ing love it",answer:"Exactly my type / hits my taste",options:["Exactly my type / hits my taste","Way too expensive","I don't know","Not that great"],explanation:"취저 = 취향(taste) + 저격(snipe). Means something perfectly matches your taste.",ytUrl:"https://www.youtube.com/watch?v=7C2z4GqqS5E",type:"kpop"},
+  {source:"Drama",show:"SKY 캐슬",episode:"Season 1 · EP 8",scene:"Student venting to friend after brutal exam",sentence:"야 이번 시험 진짜 빡셌어. 현타 제대로 왔다",highlight:"현타",translation:"Bro this exam was brutal. Reality really hit me hard",answer:"Reality check / hitting different",options:["Reality check / hitting different","I'm so hungry","I'm excited","I slept well"],explanation:"현타 = 현실(reality) + 자각(awareness) + 타임(time).",ytUrl:"https://www.youtube.com/watch?v=XTHt8ZMBsQE",type:"drama"},
+  {source:"Meme",show:"Korean Twitter 트위터",episode:"Viral 2024",scene:"When a friend says something wild",sentence:"헐 그게 말이 돼? 진짜 TMI 아니야 ㅋㅋ",highlight:"TMI",translation:"OMG is that even real? Isn't that a bit TMI lol",answer:"Too Much Information",options:["Too Much Information","To My Interest","Tell Me Immediately","Too Many Issues"],explanation:"Korean Gen Z drops English abbreviations directly into sentences.",ytUrl:"https://www.youtube.com/watch?v=f5uFhGbKzEg",type:"meme"},
+  {source:"Drama",show:"이태원 클라쓰 (Itaewon Class)",episode:"Season 1 · EP 5",scene:"Park Saeroyi stands his ground",sentence:"솔까말 나 지금 하나도 안 무서워",highlight:"솔까말",translation:"Honestly, I'm not scared at all right now",answer:"Honestly / TBH / straight up",options:["Honestly / TBH / straight up","Actually I'm scared","That's a lie","I don't know"],explanation:"솔까말 = 솔직히 + 까놓고 + 말하면.",ytUrl:"https://www.youtube.com/watch?v=VHqCIt4JKLE",type:"drama"},
+  {source:"K-POP",show:"BLACKPINK 블랙핑크",episode:"Jennie Solo fancam",scene:"Fans watching Jennie's stage",sentence:"와 지린다 진짜... 이게 말이 돼?",highlight:"지린다",translation:"Holy sh*t this is insane... How is this real?",answer:"Absolutely mind-blowing / insane",options:["Absolutely mind-blowing / insane","So sad","I'm hungry","I'm sleepy"],explanation:"Gen Z uses 지린다 when something is shockingly amazing.",ytUrl:"https://www.youtube.com/watch?v=DQFBs_kxE84",type:"kpop"},
+  {source:"Drama",show:"사랑의 불시착 (Crash Landing on You)",episode:"Season 1 · EP 4",scene:"Ri Jeong Hyeok reacts to Yoon Se-ri",sentence:"이 사람이 진짜... 킹받네",highlight:"킹받네",translation:"This person seriously... is so freaking annoying",answer:"So freaking annoying / infuriating",options:["So freaking annoying / infuriating","I love them","They're a king","I'm hungry"],explanation:"킹받다 = 킹(king) + 열받다(annoyed).",ytUrl:"https://www.youtube.com/watch?v=lWKvKCpEj4s",type:"drama"},
+  {source:"Meme",show:"YouTube Shorts 유튜브",episode:"Trending 2024",scene:"Comment on a perfectly executed video",sentence:"이거 진짜 레전드다 ㅋㅋㅋ 찐이야 찐",highlight:"레전드",translation:"This is literally legendary lol, for real",answer:"Legendary / iconic",options:["Legendary / iconic","So boring","Very old","Ordinary"],explanation:"레전드 is the highest compliment in Korean internet culture.",ytUrl:"https://www.youtube.com/watch?v=9bZkp7q19f0",type:"meme"},
 ];
 
 const travelData=[
-  {cat:"Restaurant 🍜",items:[
+  {cat:"🍜 Restaurant",items:[
     {kor:"얼마예요?",roman:"eol-ma-ye-yo",pronounce:"UHL-MA-YEH-YO",meaning:"How much is it?",tip:"Essential for shopping & eating"},
-    {kor:"맛있어요!",roman:"mas-it-eo-yo",pronounce:"MA-SHI-SSUH-YO",meaning:"It's delicious!",tip:"Say this and the owner will love you"},
-    {kor:"하나 더 주세요",roman:"ha-na deo ju-se-yo",pronounce:"HA-NA DUH JU-SEH-YO",meaning:"One more please",tip:"Works at any restaurant or cafe"},
-    {kor:"맵지 않게 해주세요",roman:"maep-ji an-ke",pronounce:"MEP-JI AN-KE HEH-JU-SEH-YO",meaning:"Please make it not spicy",tip:"Very useful in Korea!"},
-    {kor:"포장해 주세요",roman:"po-jang-hae ju-se-yo",pronounce:"PO-JANG-HEH JU-SEH-YO",meaning:"To go please / pack it up",tip:"For takeaway orders"},
+    {kor:"맛있어요!",roman:"mas-it-eo-yo",pronounce:"MA-SHEE-SSUH-YO",meaning:"It's delicious!",tip:"Say this and the owner will love you"},
+    {kor:"하나 더 주세요",roman:"ha-na deo ju-se-yo",pronounce:"HA-NA DUH JU-SEH-YO",meaning:"One more please",tip:"Works at any restaurant"},
+    {kor:"맵지 않게 해주세요",roman:"maep-ji an-ke",pronounce:"MEP-JI AN-KE HEH-JU-SEH-YO",meaning:"Not spicy please",tip:"Very useful in Korea!"},
+    {kor:"포장해 주세요",roman:"po-jang-hae ju-se-yo",pronounce:"PO-JANG-HEH JU-SEH-YO",meaning:"To go please",tip:"For takeaway orders"},
   ]},
-  {cat:"Compliments 😍",items:[
+  {cat:"😍 Compliments",items:[
     {kor:"잘생겼어요!",roman:"jal-saeng-gyeot-eo-yo",pronounce:"JAL-SENG-GYUH-SSUH-YO",meaning:"You're so handsome!",tip:"Say to a cute Korean guy 😏"},
     {kor:"예뻐요!",roman:"ye-ppeo-yo",pronounce:"YEH-PPUH-YO",meaning:"You're so pretty!",tip:"Great compliment for anyone"},
-    {kor:"대박이에요!",roman:"dae-bak-i-e-yo",pronounce:"DEH-BAK-EE-EH-YO",meaning:"That's amazing / jackpot!",tip:"Universal exclamation of amazement"},
+    {kor:"대박이에요!",roman:"dae-bak-i-e-yo",pronounce:"DEH-BAK-EE-EH-YO",meaning:"That's amazing!",tip:"Universal exclamation"},
     {kor:"짱이에요!",roman:"jjang-i-e-yo",pronounce:"JJANG-EE-EH-YO",meaning:"You're the best!",tip:"Formal version of 짱"},
   ]},
-  {cat:"Flirting 😘",items:[
-    {kor:"저랑 데이트 할래요?",roman:"jeo-rang de-i-teu hal-lae-yo",pronounce:"JUH-RANG DEH-EE-TU HAL-REH-YO",meaning:"Would you like to go on a date with me?",tip:"Bold move — use with confidence 😄"},
+  {cat:"😘 Flirting",items:[
+    {kor:"저랑 데이트 할래요?",roman:"jeo-rang de-i-teu hal-lae-yo",pronounce:"JUH-RANG DEH-EE-TU HAL-REH-YO",meaning:"Would you like to go on a date?",tip:"Bold move — use with confidence 😄"},
     {kor:"번호 알려주세요",roman:"beon-ho al-lyeo-ju-se-yo",pronounce:"BUN-HO AL-LYU-JU-SEH-YO",meaning:"Can I have your number?",tip:"Classic and direct"},
-    {kor:"너무 매력적이에요",roman:"neo-mu mae-ryeok-jeok-i-e-yo",pronounce:"NUH-MU MEH-RYUK-JUK-EE-EH-YO",meaning:"You're so charming / attractive",tip:"Slightly more sophisticated flirt"},
+    {kor:"너무 매력적이에요",roman:"neo-mu mae-ryeok-jeok-i-e-yo",pronounce:"NUH-MU MEH-RYUK-JUK-EE-EH-YO",meaning:"You're so attractive",tip:"Sophisticated flirt"},
     {kor:"밥 같이 먹을래요?",roman:"bap ga-chi meog-eul-lae-yo",pronounce:"BAP GA-CHI MUG-EUL-REH-YO",meaning:"Want to eat together?",tip:"Subtle Korean way to ask someone out"},
   ]},
-  {cat:"Survival 🆘",items:[
+  {cat:"🆘 Survival",items:[
     {kor:"화장실이 어디예요?",roman:"hwa-jang-sil-i eo-di-ye-yo",pronounce:"HWA-JANG-SIL-EE UH-DEE-YEH-YO",meaning:"Where is the bathroom?",tip:"Most important phrase ever"},
     {kor:"영어 할 줄 아세요?",roman:"yeong-eo hal jul a-se-yo",pronounce:"YUNG-UH HAL JUL AH-SEH-YO",meaning:"Do you speak English?",tip:"Ask locals for help"},
-    {kor:"길을 잃었어요",roman:"gil-eul il-heot-eo-yo",pronounce:"GIL-EUL IL-HUHT-SUH-YO",meaning:"I'm lost",tip:"Show this to any Korean and they'll help"},
+    {kor:"길을 잃었어요",roman:"gil-eul il-heot-eo-yo",pronounce:"GIL-EUL IL-HUHT-SUH-YO",meaning:"I'm lost",tip:"Show this to any Korean"},
     {kor:"사진 찍어도 돼요?",roman:"sa-jin jjik-eo-do dwae-yo",pronounce:"SA-JIN JJIK-UH-DO DWEH-YO",meaning:"Can I take a photo?",tip:"Always ask before photographing people"},
   ]},
 ];
 
-const allCats=["All","Free","Profanity","Shorts","K-POP","Drama","Internet","Everyday","School"];
-let activeCat="All";
-let isPro=false;
-let currentDetailWord='';
+const allCats=["All","Free","Profanity","Shorts","K-POP","Drama","Internet","Everyday","School","Social"];
+
+function saveState(){
+  localStorage.setItem('slangko-favs',JSON.stringify(favorites));
+  localStorage.setItem('slangko-learned',JSON.stringify(learned));
+}
+
+function updateProgress(){
+  const free=slangData.filter(d=>d.free).length;
+  const total=slangData.length;
+  const learnedFree=learned.filter(w=>slangData.find(d=>d.word===w&&d.free)).length;
+  const pct=Math.round((learnedFree/free)*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('learnedCount').textContent=learned.length;
+  document.getElementById('savedCount').textContent=favorites.length;
+  document.getElementById('totalCount').textContent=total;
+  document.getElementById('headerPct').textContent=pct+'%';
+  document.getElementById('headerLearned').textContent=learned.length+' learned';
+}
 
 function showTab(t){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(p=>p.classList.remove('active'));
   document.getElementById(t).classList.add('active');
-  ['dict','quiz','travel'].forEach((n,i)=>{if(n===t)document.querySelectorAll('.tab')[i].classList.add('active');});
+  ['dict','quiz','travel','favs'].forEach((n,i)=>{if(n===t)document.querySelectorAll('.tab')[i].classList.add('active');});
   if(t==='quiz')initQuiz();
   if(t==='travel')renderTravel();
+  if(t==='favs')renderFavs();
 }
 
 function initCats(){
@@ -262,39 +458,115 @@ function renderDict(){
   });
   const el=document.getElementById("list");
   if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:40px;color:#555">No results found</div>';return;}
-  let html="";let shown=false;
+  let html="",shown=false;
   filtered.forEach(d=>{
     const locked=!isPro&&!d.free;
-    if(locked&&!shown){shown=true;html+=`<div class="lock-banner"><h3>🔒 PRO Content</h3><p>Unlock all NSFW slang, K-POP fandom terms,<br>drama expressions & more</p><button class="lock-btn" onclick="alert('Payment coming soon! 🔥')">Start PRO · $4.99/month</button></div>`;}
+    const isFav=favorites.includes(d.word);
+    const isLearned=learned.includes(d.word);
+    if(locked&&!shown){shown=true;html+=`<div class="lock-banner"><h3>🔒 PRO Content</h3><p>Unlock 50+ more slang words — NSFW, K-POP fandom, drama expressions & more</p><button class="lock-btn" onclick="alert('Payment coming soon! 🔥')">Start PRO · $4.99/month</button></div>`;}
     html+=`<div class="card${locked?' locked':''}" onclick="${locked?'':'openDetail('+slangData.indexOf(d)+')'}">
-      <div class="card-top"><div class="word">${locked?'🔒 ???':d.word}${d.free?'<span class="free-badge">FREE</span>':''}</div>
-      <div class="badge ${d.nsfw?'nsfw':locked?'pro':'normal'}">${d.nsfw?'NSFW':locked?'PRO':'General'}</div></div>
+      ${isLearned&&!locked?'<div class="learned-badge">✓ Learned</div>':''}
+      <div class="card-top">
+        <div class="word">${locked?'🔒 ???':d.word}${d.free?'<span class="free-badge">FREE</span>':''}</div>
+        <div class="card-actions">
+          <div class="badge ${d.nsfw?'nsfw':locked?'pro':'normal'}">${d.nsfw?'NSFW':locked?'PRO':'General'}</div>
+          ${!locked?`<button class="fav-btn" onclick="event.stopPropagation();toggleFav('${d.word}')">${isFav?'❤️':'🤍'}</button>`:''}
+        </div>
+      </div>
       <div class="roman">${locked?'Locked':d.roman}</div>
       <div class="pronounce">${locked?'':d.pronounce}</div>
       <div class="meaning">${locked?'Unlock with PRO plan':d.meaning}</div>
       <div class="tags">
         ${d.cats.map(c=>`<span class="tag">${c}</span>`).join("")}
-        ${!locked?`<button class="speak-btn" onclick="event.stopPropagation();speak('${d.word}')">🔊</button>`:''}
+        ${!locked?`<button class="speak-btn" onclick="event.stopPropagation();speak('${d.word}')">🔊 Listen</button>`:''}
       </div></div>`;
   });
   el.innerHTML=html;
+  updateProgress();
+}
+
+function toggleFav(word){
+  if(favorites.includes(word))favorites=favorites.filter(w=>w!==word);
+  else favorites.push(word);
+  saveState();renderDict();
 }
 
 function openDetail(i){
   const d=slangData[i];
   if(!isPro&&!d.free)return;
-  currentDetailWord=d.word;
+  currentIdx=i;currentWord=d.word;
   document.getElementById("d-word").textContent=d.word;
   document.getElementById("d-roman").textContent=d.roman;
   document.getElementById("d-pronounce").textContent='🗣️ '+d.pronounce;
   document.getElementById("d-meaning").textContent=d.meaning;
   document.getElementById("d-example").innerHTML=`<div class="bubble"><div class="kor">${d.example.kor}</div><div class="eng">${d.example.eng}</div></div>`;
   document.getElementById("d-note").textContent=d.note;
+  document.getElementById("detailFavBtn").textContent=favorites.includes(d.word)?'❤️':'🤍';
+  const lb=document.getElementById("markLearnedBtn");
+  lb.textContent=learned.includes(d.word)?'✓ Learned!':'✓ Mark as learned';
+  lb.className='mark-learned'+(learned.includes(d.word)?' done':'');
   document.getElementById("detail").style.display="block";
   window.scrollTo(0,0);
 }
-function speakWord(){speak(currentDetailWord);}
-function closeDetail(){document.getElementById("detail").style.display="none";}
+function closeDetail(){document.getElementById("detail").style.display="none";renderDict();}
+
+function toggleFavCurrent(){
+  if(currentIdx<0)return;
+  const word=slangData[currentIdx].word;
+  if(favorites.includes(word))favorites=favorites.filter(w=>w!==word);
+  else favorites.push(word);
+  saveState();
+  document.getElementById("detailFavBtn").textContent=favorites.includes(word)?'❤️':'🤍';
+}
+
+function toggleLearnedCurrent(){
+  if(currentIdx<0)return;
+  const word=slangData[currentIdx].word;
+  if(learned.includes(word))learned=learned.filter(w=>w!==word);
+  else learned.push(word);
+  saveState();
+  const lb=document.getElementById("markLearnedBtn");
+  lb.textContent=learned.includes(word)?'✓ Learned!':'✓ Mark as learned';
+  lb.className='mark-learned'+(learned.includes(word)?' done':'');
+  updateProgress();
+}
+
+function shareTwitter(){
+  const d=slangData[currentIdx];
+  const text=encodeURIComponent(`Just learned "${d.word}" (${d.pronounce}) = "${d.meaning}" 🔥 Real Korean slang! #Korean #KDrama #KPOP`);
+  window.open('https://twitter.com/intent/tweet?text='+text);
+}
+function shareIG(){
+  const d=slangData[currentIdx];
+  navigator.clipboard.writeText(`🔥 Korean Slang of the Day!\n\n${d.word} (${d.pronounce})\n= "${d.meaning}"\n\nExample: ${d.example.kor}\n"${d.example.eng}"\n\nLearn more Korean slang at SlangKo`);
+  alert('Copied for Instagram! Paste it in your story caption 📸');
+}
+function shareCopy(){
+  navigator.clipboard.writeText('https://mealjacop-web.github.io/korean-slang-app');
+  alert('Link copied! Share it with your friends 🔥');
+}
+
+function renderFavs(){
+  const el=document.getElementById('favList');
+  if(!favorites.length){
+    el.innerHTML=`<div class="empty-fav"><div>🤍</div><div style="font-size:16px;font-weight:600;margin-bottom:8px">No saved words yet</div><div style="font-size:13px;color:#666">Tap 🤍 on any word to save it here</div></div>`;
+    return;
+  }
+  const favWords=slangData.filter(d=>favorites.includes(d.word));
+  el.innerHTML=favWords.map(d=>`
+    <div class="card" onclick="openDetail(${slangData.indexOf(d)})">
+      <div class="card-top">
+        <div class="word">${d.word}</div>
+        <div class="card-actions">
+          <div class="badge normal">Saved</div>
+          <button class="fav-btn" onclick="event.stopPropagation();toggleFav('${d.word}')">❤️</button>
+        </div>
+      </div>
+      <div class="roman">${d.roman}</div>
+      <div class="pronounce">${d.pronounce}</div>
+      <div class="meaning">${d.meaning}</div>
+    </div>`).join('');
+}
 
 // Travel
 let activeTravelCat="All";
@@ -302,12 +574,12 @@ function renderTravel(){
   const cats=["All",...travelData.map(t=>t.cat)];
   document.getElementById("travelCats").innerHTML=cats.map(c=>`<div class="cat${c===activeTravelCat?' active':''}" onclick="setTravelCat('${c}')">${c}</div>`).join("");
   const filtered=activeTravelCat==="All"?travelData:travelData.filter(t=>t.cat===activeTravelCat);
-  document.getElementById("travelList").innerHTML=filtered.map(section=>`
+  document.getElementById("travelList").innerHTML=filtered.map(s=>`
     <div class="travel-section">
-      <div class="travel-section-title">${section.cat}</div>
-      ${section.items.map(item=>`
+      <div class="travel-section-title">${s.cat}</div>
+      ${s.items.map(item=>`
         <div class="travel-card">
-          <div class="travel-left">
+          <div>
             <div class="travel-korean">${item.kor}</div>
             <div class="travel-roman">${item.roman}</div>
             <div class="travel-pronounce">🗣️ ${item.pronounce}</div>
@@ -350,27 +622,26 @@ function renderQuiz(){
   const highlighted=q.sentence.replace(q.highlight,`<span class="cinema-highlight">${q.highlight}</span>`);
   document.getElementById("quizArea").innerHTML=`
     <div class="cinema-card">
-      <div class="cinema-top">
-        <div class="cinema-show">${q.show}</div>
-        <a class="cinema-yt" href="${q.ytUrl}" target="_blank">▶ YouTube</a>
-      </div>
+      <div class="cinema-top"><div class="cinema-show">${q.show}</div><a class="cinema-yt" href="${q.ytUrl}" target="_blank">▶ YouTube</a></div>
       <div class="cinema-scene">${q.scene}</div>
-      <div class="cinema-screen">
-        <div class="cinema-subtitle">${highlighted}</div>
-        <div class="cinema-eng">"${q.translation}"</div>
-      </div>
+      <div class="cinema-screen"><div class="cinema-subtitle">${highlighted}</div><div class="cinema-eng">"${q.translation}"</div></div>
       <div class="cinema-bottom">
         <div class="cinema-ep">${q.episode}</div>
         <div class="cinema-type ${typeClass}">${typeLabel}</div>
+        <button class="read-btn" id="readBtn" onclick="readSentence('${q.sentence}',this)">🔊 Read aloud</button>
       </div>
     </div>
     <div style="color:#888;font-size:12px;margin-bottom:10px;padding:0 4px">What does <span style="color:#FFE600;font-weight:700">${q.highlight}</span> mean?</div>
-    <div class="options">
-      ${q.options.map((o,i)=>`<button class="option" onclick="selectAnswer(${i})">${o}</button>`).join("")}
-    </div>
+    <div class="options">${q.options.map((o,i)=>`<button class="option" onclick="selectAnswer(${i})">${o}</button>`).join("")}</div>
     <div class="result-msg" id="resultMsg"></div>
     <div class="explanation-box" id="explanation"><div class="exp-label">💡 Explanation</div><div class="exp-text">${q.explanation}</div></div>
+    <div class="word-audio" id="wordAudio"><div style="color:#eee;font-size:14px">Now hear just the word:</div><button class="word-audio-btn" onclick="speak('${q.highlight}',0.7)">🔊 ${q.highlight}</button></div>
     <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>`;
+}
+function readSentence(text,btn){
+  btn.classList.add('playing');btn.textContent='🔊 Playing...';
+  speak(text,0.75);
+  setTimeout(()=>{btn.classList.remove('playing');btn.textContent='🔊 Read aloud';},3000);
 }
 function selectAnswer(i){
   if(answered)return;
@@ -379,15 +650,16 @@ function selectAnswer(i){
   const opts=document.querySelectorAll('.option');
   const correct=q.options.indexOf(q.answer);
   const msg=document.getElementById("resultMsg");
-  if(i===correct){opts[i].classList.add('correct');msg.textContent="Correct! 🎉 +1 point";msg.className="result-msg correct";score++;}
-  else{opts[i].classList.add('wrong');opts[correct].classList.add('correct');msg.textContent="Wrong 😅 Check the correct answer";msg.className="result-msg wrong";}
+  if(i===correct){opts[i].classList.add('correct');msg.textContent="Correct! 🎉 +1 point";msg.className="result-msg correct";score++;speak(q.highlight,0.7);}
+  else{opts[i].classList.add('wrong');opts[correct].classList.add('correct');msg.textContent="Wrong 😅 Listen to the correct word:";msg.className="result-msg wrong";setTimeout(()=>speak(q.highlight,0.7),500);}
   msg.style.display="block";
   document.getElementById("explanation").style.display="block";
+  const wa=document.getElementById("wordAudio");if(wa)wa.style.display="flex";
   document.getElementById("nextBtn").style.display="block";
 }
 function nextQuestion(){qIndex++;answered=false;renderQuiz();}
 
-initCats();renderDict();
+initOnboard();initCats();renderDict();
 </script>
 </body>
 </html>
